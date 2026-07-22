@@ -1,0 +1,140 @@
+---
+title: "Tool reference"
+description: "Every AdLoop tool, grouped by toolset."
+---
+
+{/* GENERATED FILE — do not edit by hand.
+    Regenerate: uv run --project ../adloop python scripts/generate_tools.py */}
+
+Tools are grouped by [toolset](/concepts/toolsets). Type: **Read** tools never change anything; **Write** tools return previews and only act through `confirm_and_apply`; **Destructive** writes additionally require double confirmation.
+
+
+## Always available (`core`)
+
+Included with every toolset selection.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `confirm_and_apply` | Destructive | Execute a previously previewed change. |
+| `health_check` | Read | Test AdLoop connectivity — checks OAuth token, GA4 API, and Google Ads API. |
+
+
+## Google Ads (`ads`)
+
+Google Ads reads, writes, and planning.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `add_negative_keywords` | Write | Draft negative keyword additions — returns a PREVIEW. |
+| `add_negative_locations` | Write | Draft negative geo location additions — returns a PREVIEW. |
+| `add_to_negative_keyword_list` | Write | Append keywords to an EXISTING shared negative keyword list — returns a PREVIEW. |
+| `attach_shared_set_to_campaigns` | Write | Attach an existing shared set to one or more campaigns — returns a PREVIEW. |
+| `detach_shared_set_from_campaigns` | Write | Detach a shared set from one or more campaigns — returns a PREVIEW. |
+| `discover_keywords` | Read | Discover new keyword ideas using Google Ads Keyword Planner. |
+| `draft_ad_group` | Write | Draft a new ad group within an existing campaign — returns a PREVIEW, does NOT create. |
+| `draft_callouts` | Write | Draft campaign callout assets — returns a PREVIEW. |
+| `draft_campaign` | Write | Draft a full campaign structure — returns a PREVIEW, does NOT create anything. |
+| `draft_demographic_targeting` | Write | Draft demographic targeting (age/gender/parental status/income) — returns a PREVIEW. |
+| `draft_image_assets` | Write | Draft campaign image assets from local PNG, JPEG, or GIF files. |
+| `draft_keywords` | Write | Draft keyword additions — returns a PREVIEW, does NOT add keywords. |
+| `draft_responsive_search_ad` | Write | Draft a Responsive Search Ad — returns a PREVIEW, does NOT create the ad. |
+| `draft_sitelinks` | Write | Draft sitelink extensions for a campaign — returns a PREVIEW. |
+| `draft_structured_snippets` | Write | Draft campaign structured snippet assets — returns a PREVIEW. |
+| `enable_entity` | Write | Draft enabling a paused campaign, ad group, ad, or keyword — returns a PREVIEW. |
+| `estimate_budget` | Read | Forecast clicks, cost, and conversions for a set of keywords. |
+| `get_ad_performance` | Read | Get ad-level performance data including headlines, descriptions, and metrics. |
+| `get_asset_performance` | Read | Get per-asset details for Performance Max campaigns. |
+| `get_audience_performance` | Read | Get audience segment performance metrics. |
+| `get_campaign_performance` | Read | Get campaign-level performance metrics for a date range. |
+| `get_demographic_targeting` | Read | List demographic targeting criteria (age, gender, parental status, income). |
+| `get_detailed_asset_performance` | Read | Get top-performing asset combinations for Performance Max campaigns. |
+| `get_keyword_performance` | Read | Get keyword metrics including quality scores and competitive data. |
+| `get_negative_keyword_list_campaigns` | Read | List which campaigns a shared negative keyword list is attached to. |
+| `get_negative_keyword_list_keywords` | Read | List the keywords inside a shared negative keyword list. |
+| `get_negative_keyword_lists` | Read | List all shared negative keyword lists (SharedSets) in the account. |
+| `get_negative_keywords` | Read | List existing negative keywords for a campaign or all campaigns. |
+| `get_pmax_performance` | Read | Get Performance Max campaign and asset group performance. |
+| `get_recommendations` | Read | Retrieve Google's auto-generated recommendations with estimated impact. |
+| `get_search_terms` | Read | Get search terms report — what users actually typed before clicking your ads. |
+| `list_accounts` | Read | List accessible Google Ads accounts. |
+| `pause_entity` | Write | Draft pausing a campaign, ad group, ad, or keyword — returns a PREVIEW. |
+| `propose_negative_keyword_list` | Write | Draft a shared negative keyword list and attach it to a campaign — returns a PREVIEW. |
+| `remove_entity` | Destructive | Draft REMOVING an entity — returns a PREVIEW. This is IRREVERSIBLE. |
+| `run_gaql` | Read | Execute an arbitrary GAQL (Google Ads Query Language) query. |
+| `update_ad_group` | Write | Draft an ad group update for name and/or manual CPC bid. |
+| `update_campaign` | Write | Draft an update to an existing campaign — returns a PREVIEW, does NOT apply. |
+
+
+## Google Analytics (`ga4`)
+
+Google Analytics reads and key events.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `draft_key_event` | Write | Draft marking a GA4 event as a key event (conversion) — returns a PREVIEW. |
+| `get_account_summaries` | Read | List all GA4 accounts and properties accessible by the authenticated user. |
+| `get_tracking_events` | Read | List all GA4 events and their volume for the given date range. |
+| `run_ga4_report` | Read | Run a custom GA4 report with specified dimensions, metrics, and date range. |
+| `run_realtime_report` | Read | Run a GA4 realtime report showing current active users and events. |
+
+
+## Tracking & Attribution (`tracking`)
+
+Cross-channel attribution and tracking code.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `analyze_campaign_conversions` | Read | Campaign clicks → GA4 conversions mapping — the real cost-per-conversion. |
+| `attribution_check` | Read | Compare Ads-reported conversions vs GA4 — find tracking discrepancies. |
+| `generate_tracking_code` | Read | Generate a GA4 event tracking JavaScript snippet. |
+| `landing_page_analysis` | Read | Analyze which landing pages convert and which don't. |
+| `validate_tracking` | Read | Compare tracking events found in the codebase against actual GA4 data. |
+
+
+## Tag Manager (`gtm`)
+
+Google Tag Manager reads.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `audit_event_coverage` | Read | Three-way audit: codebase events ↔ GTM tags ↔ GA4 actual fires. |
+| `get_gtm_tag` | Read | Get the full RAW configuration for a single GTM tag. |
+| `get_gtm_trigger` | Read | Get the full RAW configuration for a single GTM trigger. |
+| `get_gtm_version` | Read | Get full metadata + entity counts for a single GTM container version. |
+| `get_gtm_workspace_diff` | Read | Show drafted-but-not-published changes in a GTM workspace. |
+| `list_gtm_accounts` | Read | List all GTM accounts the AdLoop service account / OAuth user can read. |
+| `list_gtm_containers` | Read | List all containers under a GTM account. |
+| `list_gtm_tags` | Read | List every tag in the LIVE GTM container. |
+| `list_gtm_triggers` | Read | List every trigger in the LIVE GTM container. |
+| `list_gtm_variables` | Read | List GTM variables — both custom and enabled built-in. |
+| `list_gtm_versions` | Read | List published GTM version history (newest first). |
+| `list_gtm_workspaces` | Read | List workspaces (drafts) under a GTM container. |
+
+
+## Search Console (`gsc`)
+
+Search Console reads.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `list_gsc_sites` | Read | List all Google Search Console properties the authenticated user can access. |
+| `run_gsc_report` | Read | Run a Google Search Console search analytics report. |
+
+
+## Web Performance (`web`)
+
+PageSpeed / web performance.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `analyze_page_speed` | Read | Run PageSpeed Insights for a landing page — Lighthouse + real-user data. |
+
+
+## Merchant Center (`merchant`)
+
+Merchant Center reads.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `get_merchant_feed_health` | Read | Merchant Center feed health — disapproved products + account issues. |
+| `list_merchant_accounts` | Read | List Google Merchant Center accounts the connected user can access. |

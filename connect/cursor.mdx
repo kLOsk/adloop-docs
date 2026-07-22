@@ -1,0 +1,45 @@
+---
+title: "Connect Cursor"
+description: "Add AdLoop to Cursor via mcp.json."
+---
+
+## AdLoop Cloud
+
+Add to `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (global), with your API key from **Settings → API keys**:
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "url": "https://mcp.getadloop.com/mcp",
+      "headers": {
+        "Authorization": "Bearer alc_YOUR_KEY"
+      }
+    }
+  }
+}
+```
+
+## Self-hosted
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "command": "python",
+      "args": ["-m", "adloop"],
+      "env": { "ADLOOP_TOOLSETS": "ads,ga4" }
+    }
+  }
+}
+```
+
+The `env` block is optional; leave it out for the full catalog. See [Toolsets](/concepts/toolsets).
+
+<Tip>
+Cursor warns when many MCP tools are active at once. If you run several MCP servers, a restricted AdLoop key (or `ADLOOP_TOOLSETS`) keeps the tool list lean. Copy `.cursor/rules/adloop.mdc` from the [repository](https://github.com/kLOsk/adloop) into your project so Cursor knows the orchestration and safety patterns.
+</Tip>
+
+## Verify
+
+Ask Cursor's agent to run the AdLoop health check. If something fails, see [Troubleshooting](/troubleshooting).

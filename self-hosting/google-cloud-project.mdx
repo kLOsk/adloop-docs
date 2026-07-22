@@ -1,0 +1,29 @@
+---
+title: "Google Cloud project setup"
+description: "Your own OAuth credentials in about five minutes."
+---
+
+Self-hosted AdLoop uses your own Google Cloud project: no shared user caps, no dependency on someone else's verification review, and the consent screen shows *your* project to *your* account. `adloop init` walks you through this; here's the same path for reference.
+
+<Steps>
+  <Step title="Create a project">
+    [console.cloud.google.com](https://console.cloud.google.com) → New project. Free; no billing account needed for these APIs.
+  </Step>
+  <Step title="Enable the APIs">
+    Under **APIs & Services → Library**, enable: **Google Ads API**, **Google Analytics Data API**, and **Google Analytics Admin API**. Optionally, for the corresponding toolsets: **Tag Manager API**, **Search Console API**, **Merchant API**, **PageSpeed Insights API**.
+  </Step>
+  <Step title="Create OAuth credentials">
+    **APIs & Services → Credentials → Create credentials → OAuth client ID**, application type **Desktop app**. Download the JSON; the wizard copies it to `~/.adloop/credentials.json`.
+  </Step>
+  <Step title="Configure the consent screen">
+    Add yourself as a test user, or publish the app to **In production** (recommended: tokens for apps left in "Testing" expire every 7 days).
+  </Step>
+</Steps>
+
+<Warning>
+If your OAuth token keeps expiring weekly, your consent screen is still in "Testing". Publish it to "In production" in the Google Cloud Console.
+</Warning>
+
+## Adding scopes later
+
+When AdLoop adds new Google services, existing tokens don't cover the new scopes. AdLoop detects this and triggers a fresh consent automatically; approve all requested permissions in one go. Details in [Troubleshooting](/troubleshooting).

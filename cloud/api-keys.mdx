@@ -1,0 +1,28 @@
+---
+title: "API keys"
+description: "Create, restrict, reveal, and revoke the keys your AI tools use."
+---
+
+Every AI tool you connect authenticates with an API key (`alc_...`) from **Settings → API keys**. Your first key is created automatically during onboarding.
+
+## Creating a key
+
+Each key has a label (name the tool it's for; it helps when cleaning up later) and optional restrictions:
+
+- **Read-only**: the server refuses every write tool for this key. The AI can analyze and report but never change anything, see [the safety model](/concepts/safety-model#read-only-keys).
+- **Toolsets**: expose only selected tool groups, which shrinks the tool list your AI loads into context. See [Toolsets](/concepts/toolsets).
+- **Client scoping** (agency plan): limit a key to specific clients. See [Clients](/cloud/clients).
+
+Restrictions combine freely: a read-only, `ga4`-only key scoped to one client is a perfectly good reporting handout.
+
+## Key values
+
+The key value is shown once at creation and stored encrypted; **Reveal** shows it again later (keys from before this feature can't be revealed — rotate instead). Treat keys like passwords.
+
+## Revoking
+
+**Revoke** takes effect immediately; tools using that key lose access on their next call. Deleting a client (agency plan) revokes its scoped keys in the same step.
+
+## Narrowing access
+
+You can narrow a key's client set after creation ("Zugriff bearbeiten"), but never widen it: a credential must never gain access it didn't have when it was issued. Wider access takes a new key.

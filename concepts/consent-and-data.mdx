@@ -1,0 +1,23 @@
+---
+title: "Consent and data gaps"
+description: "Why Ads clicks and GA4 sessions never match in the EU, and why that's not a bug."
+---
+
+The single most common false alarm in EU ad accounts: *"Google Ads shows 10 clicks but GA4 only 3 sessions — my tracking is broken!"* Usually it isn't. AdLoop's analysis tools understand this; here's the background.
+
+## The mechanics
+
+- **Google Ads counts every click.** No consent needed; a click is a click.
+- **GA4 only records users who accepted analytics cookies.** Visitors who reject or ignore the consent banner are invisible to GA4.
+- In EU traffic, 30–70% of users typically decline. A clicks-to-sessions ratio of 2:1 to 5:1 is **normal**, not broken tracking.
+- Conversion counts are affected the same way: your true conversion rate is likely higher than GA4 reports.
+
+## What AdLoop does about it
+
+The cross-reference tools (`analyze_campaign_conversions`, `attribution_check`) factor consent gaps into their analysis and say so in their insights, so your AI doesn't misdiagnose normal EU consent behavior as a tracking bug. Genuine tracking issues (zero sessions across all traffic sources, missing events, paused GTM tags) are still flagged, and the three-way tracking audit pinpoints them.
+
+## When to actually worry
+
+- GA4 shows **zero** sessions from paid traffic while organic looks normal: check UTM parameters and GA4 filters.
+- Events fire in the browser but never arrive in GA4: run the tracking audit (`audit_event_coverage`) across your website code, GTM container, and GA4.
+- Sites with Google Consent Mode v2 send cookieless pings even without consent, which narrows the gap; if your numbers are closer than expected, that's likely why.

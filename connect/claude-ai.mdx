@@ -1,0 +1,30 @@
+---
+title: "Connect claude.ai"
+description: "Add AdLoop Cloud as a custom connector in claude.ai."
+---
+
+<Info>
+claude.ai connects to **AdLoop Cloud** only (remote connectors can't reach a server on your laptop). You'll need a claude.ai plan that supports custom connectors, e.g. Pro. For the self-hosted edition, use [Claude Code](/connect/claude-code) or [Cursor](/connect/cursor).
+</Info>
+
+<Steps>
+  <Step title="Open connector settings">
+    In claude.ai: **Settings → Connectors → Add custom connector**.
+  </Step>
+  <Step title="Add the AdLoop endpoint">
+    ```
+    https://mcp.getadloop.com/mcp
+    ```
+  </Step>
+  <Step title="Authorize">
+    claude.ai redirects you to AdLoop's consent page, where you sign in with your AdLoop Cloud account and approve the connection. No API key is pasted anywhere; the connector uses OAuth.
+  </Step>
+  <Step title="Verify">
+    Ask Claude: *"Run the AdLoop health check."* You should see your GA4 and Ads connection status.
+  </Step>
+</Steps>
+
+## Notes
+
+- Connector access is workspace-wide for your tenant. Per-key restrictions (read-only, toolsets, client scoping) apply to API-key connections; the OAuth connector uses your tenant's full configuration.
+- Every write still goes through the [preview and confirm flow](/concepts/safety-model), regardless of client.

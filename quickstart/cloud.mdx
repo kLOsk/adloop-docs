@@ -1,0 +1,32 @@
+---
+title: "Quickstart: AdLoop Cloud"
+description: "From registration to your first analysis in under five minutes."
+---
+
+AdLoop Cloud hosts everything for you: Google API access, OAuth, credential encryption, and the MCP endpoint at `mcp.getadloop.com`. You bring a Google account with access to your Ads account or GA4 property, and an AI tool that speaks MCP.
+
+<Steps>
+  <Step title="Create your account">
+    Register at [getadloop.com](https://getadloop.com/register). The beta is free with limited seats.
+  </Step>
+  <Step title="Connect Google">
+    The onboarding wizard asks you to connect your Google account and pick which accounts your AI may see: an Ads account, a GA4 property, and optionally a Tag Manager container, Search Console property, or Merchant Center account.
+
+    <Note>
+    Google may warn that the app is "unverified" while Google's official review is in progress. You can proceed via "Advanced". The connection uses Google's own OAuth dialog; AdLoop never sees your password, and you can revoke access in your Google account at any time.
+    </Note>
+  </Step>
+  <Step title="Create an API key">
+    The wizard creates your personal key automatically. It's shown once and stored encrypted; you can reveal, restrict, or revoke keys later under **Settings → API keys**. Optional restrictions: [read-only](/concepts/safety-model#read-only-keys) and [toolsets](/concepts/toolsets).
+  </Step>
+  <Step title="Connect your AI">
+    Follow the guide for your tool: [claude.ai](/connect/claude-ai), [Claude Code](/connect/claude-code), [Cursor](/connect/cursor), or [ChatGPT](/connect/chatgpt).
+  </Step>
+  <Step title="Ask something real">
+    Try: *"How did my campaigns perform in the last 30 days, and where am I wasting spend?"*
+  </Step>
+</Steps>
+
+## The order matters
+
+Google setup comes before API keys, and API keys before connecting your AI. A key created before Google is connected would only ever return setup errors, so the dashboard enforces the sequence.

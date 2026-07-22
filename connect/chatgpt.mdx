@@ -1,0 +1,31 @@
+---
+title: "Connect ChatGPT"
+description: "Add AdLoop Cloud to ChatGPT via developer mode."
+---
+
+<Info>
+ChatGPT connects to **AdLoop Cloud** (remote MCP servers). MCP support requires developer mode, available on paid ChatGPT plans.
+</Info>
+
+<Steps>
+  <Step title="Enable developer mode">
+    **Settings → Connectors → Advanced → Developer mode**.
+  </Step>
+  <Step title="Add the AdLoop server">
+    Create a new connector with the endpoint:
+
+    ```
+    https://mcp.getadloop.com/mcp
+    ```
+
+    Choose OAuth authentication. ChatGPT redirects you to AdLoop's consent page where you sign in and approve.
+  </Step>
+  <Step title="Verify">
+    In a chat with the connector enabled, ask: *"Run the AdLoop health check."*
+  </Step>
+</Steps>
+
+## Notes
+
+- ChatGPT's MCP support evolves quickly; if connector options moved, look for "Connectors" or "Apps" in settings.
+- Every write goes through the [preview and confirm flow](/concepts/safety-model) regardless of client, so an over-eager agent can't apply anything without you.

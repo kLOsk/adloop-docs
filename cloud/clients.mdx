@@ -1,0 +1,20 @@
+---
+title: "Clients (agency plan)"
+description: "One workspace, many client accounts, clean separation."
+---
+
+On the agency plan, each client is a **profile**: an Ads account + GA4 property pairing (optionally with GTM container, Search Console property, and Merchant Center account). Manage them under **Settings → Clients**.
+
+## What profiles give you
+
+- **Scoped API keys**: a key limited to specific clients can only reach those clients' accounts. The server refuses calls targeting anything else, with a message that names the key's allowed clients. Hand a client-scoped, read-only key to the client themselves for transparent reporting.
+- **Per-client attribution**: usage and the change log are attributed to the client a call was for, so you can show any client exactly what changed in their account and when.
+- **Per-call account selection**: your own tenant-wide key (agency owner) can address any client account directly in chat; scoped keys stay locked to their clients.
+
+## MCC support
+
+Connect your Manager Account once; client accounts under it are addressable without separate Google connections per client.
+
+## Solo plan
+
+Solo workspaces manage exactly one Ads + GA4 pairing, and every credential is locked to it. That's the plan working as designed; per-call account overrides are an agency feature.

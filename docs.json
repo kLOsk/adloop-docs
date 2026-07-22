@@ -1,0 +1,84 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "AdLoop",
+  "colors": {
+    "primary": "#3b82f6",
+    "light": "#60a5fa",
+    "dark": "#2563eb"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get started",
+        "pages": [
+          "index",
+          "quickstart/cloud",
+          "quickstart/self-hosted"
+        ]
+      },
+      {
+        "group": "Connect your AI",
+        "pages": [
+          "connect/claude-ai",
+          "connect/claude-code",
+          "connect/cursor",
+          "connect/chatgpt"
+        ]
+      },
+      {
+        "group": "Concepts",
+        "pages": [
+          "concepts/safety-model",
+          "concepts/toolsets",
+          "concepts/consent-and-data"
+        ]
+      },
+      {
+        "group": "AdLoop Cloud",
+        "pages": [
+          "cloud/api-keys",
+          "cloud/clients"
+        ]
+      },
+      {
+        "group": "Self-hosting",
+        "pages": [
+          "self-hosting/configuration",
+          "self-hosting/google-cloud-project"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/tools",
+          "troubleshooting"
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/kLOsk/adloop"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://getadloop.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/kLOsk/adloop",
+      "website": "https://getadloop.com"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+---
+title: "Configuration reference"
+description: "Everything in ~/.adloop/config.yaml."
+---
+
+All configuration lives in `~/.adloop/config.yaml`, created by `adloop init`. A documented template ships as `config.yaml.example` in the repository.
+
+| Section | Key | Default | Description |
+|---------|-----|---------|-------------|
+| `google` | `project_id` | *(empty)* | Google Cloud project ID (only needed with custom credentials) |
+| `google` | `credentials_path` | *(empty)* | Path to OAuth client JSON or service account key. Empty = `~/.adloop/credentials.json`, else Application Default Credentials |
+| `google` | `token_path` | `~/.adloop/token.json` | Where the OAuth token is stored (auto-created) |
+| `ga4` | `property_id` | — | Your GA4 property ID (auto-discovered by the wizard) |
+| `ads` | `developer_token` | — | Your Google Ads API developer token |
+| `ads` | `customer_id` | — | Default Ads customer ID (auto-discovered by the wizard) |
+| `ads` | `login_customer_id` | — | Your MCC account ID |
+| `gsc` | `site_url` | *(empty)* | Search Console property (`https://example.com/` or `sc-domain:example.com`); empty = pass per call |
+| `gtm` | `account_id` / `container_id` | *(empty)* | Default GTM account/container; empty = pass per call |
+| `pagespeed` | `api_key` | *(empty)* | Optional API key for `analyze_page_speed` (keyless works at low rates) |
+| `safety` | `max_daily_budget` | `50.00` | Maximum daily budget AdLoop can set per campaign |
+| `safety` | `require_dry_run` | `true` | Force all writes to dry-run mode |
+| `safety` | `two_phase_apply` | `false` | Refuse real applies until the plan had a dry-run pass |
+| `safety` | `blocked_operations` | `[]` | Operations to block entirely |
+
+## Environment variables
+
+| Variable | Effect |
+|----------|--------|
+| `ADLOOP_CONFIG` | Path to an alternative config file |
+| `ADLOOP_TOOLSETS` | Comma-separated [toolsets](/concepts/toolsets) to expose (unset = all) |
+
+## Multiple setups
+
+Point `ADLOOP_CONFIG` at different config files to run separate accounts side by side, and remember that toolsets are set per MCP client, so one config can serve differently trimmed clients.

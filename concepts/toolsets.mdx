@@ -1,0 +1,36 @@
+---
+title: "Toolsets"
+description: "Expose only the tools you use and cut your AI's context cost."
+---
+
+Most MCP clients load **every tool schema into the model's context at the start of every conversation**. AdLoop's full catalog costs roughly 18k tokens per session that way, before you type a word. Toolsets let you expose a subset.
+
+## The toolsets
+
+| Toolset | Covers |
+|---------|--------|
+| `ads` | Google Ads reads, writes, and planning (Keyword Planner) |
+| `ga4` | Google Analytics reports, realtime, key events |
+| `tracking` | Cross-channel attribution and tracking code generation |
+| `gtm` | Google Tag Manager audits and reads |
+| `gsc` | Search Console reads |
+| `web` | PageSpeed / Core Web Vitals |
+| `merchant` | Merchant Center feed health |
+
+`health_check` and `confirm_and_apply` are always included, whatever you select, so diagnostics and the [safety gate](/concepts/safety-model) can never be filtered away.
+
+## What it saves
+
+Measured against the live tools/list: the full catalog is ≈18k tokens, `ads,ga4` is ≈13k, and a `ga4`-only selection is ≈2k — an 88% reduction. Toolsets are per **consumer**, not per install: one AdLoop setup can serve a trimmed Cursor and a full-catalog Claude Code side by side.
+
+## AdLoop Cloud: per API key
+
+Pick toolsets when creating a key under **Settings → API keys**. The server then trims that key's advertised tool list and refuses calls outside the selection, with a clear message pointing back to the dashboard. Existing keys are unrestricted until you say otherwise.
+
+## Self-hosted: environment variable
+
+```json
+"env": { "ADLOOP_TOOLSETS": "ads,ga4" }
+```
+
+Set it in your MCP client's configuration (the `adloop init` wizard offers this and writes it into the snippets). Unset means the full catalog; unknown names fail at startup listing the valid ones.

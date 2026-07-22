@@ -1,0 +1,43 @@
+---
+title: "The safety model"
+description: "The AI proposes. Only you apply."
+---
+
+AdLoop's safety model exists because AI touching ad budgets is a reasonable thing to be nervous about. It is enforced **server-side**: even a client that ignores every instruction cannot skip it.
+
+## Preview before everything
+
+Every write tool (`draft_campaign`, `add_negative_keywords`, `pause_entity`, ...) returns a **preview** with a `plan_id` instead of changing anything. Your AI shows you the preview; nothing happens until `confirm_and_apply` is called with that plan ID.
+
+## Dry-run by default
+
+`confirm_and_apply` defaults to `dry_run=true`, which validates the change against the Google Ads API without applying it. Applying for real requires an explicit `dry_run=false`, and two settings can restrict it further:
+
+- **`require_dry_run`**: all real applies are refused until you disable this (self-hosted: `config.yaml`; Cloud: dashboard safety settings)
+- **Two-phase apply**: a plan must complete a dry-run pass before it can be applied for real (always on for Cloud tenants)
+
+## Created paused
+
+New campaigns and ads are always created **PAUSED**. You review them in the Google Ads UI (or by chat) and enable them explicitly, via `enable_entity`, which itself goes through preview and confirm.
+
+## Budget caps
+
+`max_daily_budget` caps every budget AdLoop can set. Drafts above the cap are rejected at draft time, before anything reaches Google. Cloud additionally enforces daily operation limits per workspace.
+
+## Guardrails against classic money-wasters
+
+- **Broad Match + Manual CPC is refused.** Broad match keywords without smart bidding are the most common cause of wasted spend; the draft tools reject the combination.
+- **Campaigns require geo and language targeting.** Untargeted campaigns serve globally and waste budget; drafts without targeting are rejected.
+- **URLs are validated.** Ads and sitelinks pointing at unreachable pages are rejected at draft time.
+
+## Read-only keys
+
+A read-only API key (Cloud) refuses every write tool at the server. It's the only way to get "analyze but never change": Google's OAuth scopes have no read-only mode for Ads. Ideal for reporting access and cautious starts.
+
+## Audit log
+
+Every write operation, including dry runs, is logged: self-hosted to `~/.adloop/audit.log`, Cloud to the change log (Protokoll) in your dashboard, attributable per client for agencies.
+
+## Destructive operations
+
+`remove_entity` is irreversible and triggers double confirmation. Prefer `pause_entity` unless you explicitly want permanent removal.

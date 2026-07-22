@@ -1,0 +1,41 @@
+---
+title: "Troubleshooting"
+description: "The errors you'll actually meet, and their fixes."
+---
+
+## First move: the health check
+
+Ask your AI to run `health_check`. It tests the OAuth token, GA4, and Ads connectivity and returns actionable guidance per service.
+
+## "This app isn't verified" (Cloud)
+
+Google shows this while AdLoop Cloud's official app review is in progress. Click **Advanced**, then **continue to getadloop.com**. The connection runs through Google's own OAuth dialog; AdLoop never sees your password, and you can revoke access anytime in your Google account.
+
+## Authorization errors after an AdLoop update (self-hosted)
+
+When new Google services are added, stored tokens don't cover the new scopes.
+
+- AdLoop discards outdated tokens automatically and re-runs consent on the next tool call. **Approve all permissions in one go**: partially granted consents are rejected with an error naming the missing scopes, because a partial token would break every other service.
+- If you see `invalid_scope` errors, delete `~/.adloop/token.json` and run any tool to re-authorize.
+
+## Token expires every 7 days (self-hosted)
+
+Your Google Cloud consent screen is in "Testing" status. Publish it to **In production** (Google Cloud Console → APIs & Services → OAuth consent screen).
+
+## GTM or Search Console tools return permission errors
+
+- The **Tag Manager API** / **Search Console API** must be enabled in your Google Cloud project (self-hosted).
+- Your Google account needs at least read access to the GTM container / GSC property.
+- Tokens created before these toolsets existed must re-consent once (see above).
+
+## "This API key is limited to the toolsets…" (Cloud)
+
+The key was created with a [toolset restriction](/concepts/toolsets) and the AI called a tool outside it. Use a key that includes the toolset, or create one in **Settings → API keys**. Retrying with the same key won't help.
+
+## Ads clicks don't match GA4 sessions
+
+Almost always EU consent behavior, not broken tracking. Read [Consent and data gaps](/concepts/consent-and-data) before changing anything.
+
+## A write was refused
+
+That's usually the [safety model](/concepts/safety-model) doing its job: budget above `max_daily_budget`, broad match on manual CPC, missing geo/language targeting, or a read-only key hitting a write tool. The refusal message names the reason and where to change the setting.

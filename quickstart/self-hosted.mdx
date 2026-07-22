@@ -1,0 +1,46 @@
+---
+title: "Quickstart: Self-hosted"
+description: "Run the open-source MCP server with your own Google Cloud project."
+---
+
+The open-source edition runs on your machine and uses your own (free) Google Cloud project for OAuth. One-time setup takes about five minutes with the wizard.
+
+## Requirements
+
+- Python 3.11+
+- A Google Ads account with an MCC (Manager Account) and a [developer token](https://ads.google.com/aw/apicenter)
+- A Google Cloud project with OAuth credentials (the wizard walks you through creating one, see [Google Cloud project setup](/self-hosting/google-cloud-project))
+
+## Run the wizard
+
+```bash
+pip install adloop
+adloop init
+```
+
+The wizard walks you through:
+
+1. **Google Cloud setup**: your project, the required APIs, an OAuth client
+2. **Developer token and MCC account ID**
+3. **OAuth sign-in**: opens a browser, or prints a URL on headless servers
+4. **Account discovery**: finds your GA4 properties and Ads accounts automatically
+5. **Optional services**: pin a GTM container and Search Console property (auto-discovered), store a PageSpeed API key. Skip any step with Enter.
+6. **Safety defaults**: budget cap and dry-run preference
+7. **Toolsets**: optionally expose only part of the tool catalog to [cut context cost](/concepts/toolsets)
+8. **Editor snippets**: ready-to-paste MCP configuration for Claude Code and Cursor, including your toolset selection
+
+Configuration lives in `~/.adloop/config.yaml`; see the [configuration reference](/self-hosting/configuration).
+
+## Connect your AI
+
+The wizard prints the exact snippets. In short:
+
+```bash
+claude mcp add --transport stdio adloop -- python -m adloop
+```
+
+For other clients, see [Connect your AI](/connect/claude-code).
+
+<Tip>
+Prefer zero setup? [AdLoop Cloud](/quickstart/cloud) runs the same tools without a Google Cloud project or developer token.
+</Tip>

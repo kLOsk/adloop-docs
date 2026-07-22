@@ -1,0 +1,53 @@
+---
+title: "Connect Claude Code"
+description: "Add AdLoop to Claude Code, Cloud or self-hosted."
+---
+
+## AdLoop Cloud
+
+Use your API key from **Settings → API keys** in the [dashboard](https://getadloop.com):
+
+```bash
+claude mcp add --transport http adloop https://mcp.getadloop.com/mcp \
+  --header "Authorization: Bearer alc_YOUR_KEY"
+```
+
+## Self-hosted
+
+After running `adloop init`:
+
+```bash
+claude mcp add --transport stdio adloop -- python -m adloop
+```
+
+To expose only some [toolsets](/concepts/toolsets) (smaller tool list, less context per conversation):
+
+```bash
+claude mcp add --transport stdio adloop --env ADLOOP_TOOLSETS=ads,ga4 -- python -m adloop
+```
+
+Or in your project's `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "command": "python",
+      "args": ["-m", "adloop"],
+      "env": { "ADLOOP_TOOLSETS": "ads,ga4" }
+    }
+  }
+}
+```
+
+## Orchestration rules
+
+For self-hosted setups, `adloop install-rules` installs orchestration rules and slash commands into `~/.claude/` so Claude knows the safety patterns, GAQL reference, and workflows. Cloud users get the essential rules delivered through the server itself.
+
+## Verify
+
+```
+> Run the AdLoop health check.
+```
+
+You should see OAuth, GA4, and Ads status. If something fails, see [Troubleshooting](/troubleshooting).
