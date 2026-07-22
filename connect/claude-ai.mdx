@@ -3,6 +3,8 @@ title: "Connect claude.ai"
 description: "Add AdLoop Cloud as a custom connector in claude.ai."
 ---
 
+import DocsMcp from "/snippets/docs-mcp.mdx";
+
 <Info>
 claude.ai connects to **AdLoop Cloud** only (remote connectors can't reach a server on your laptop). You'll need a claude.ai plan that supports custom connectors, e.g. Pro. For the self-hosted edition, use [Claude Code](/connect/claude-code) or [Cursor](/connect/cursor).
 </Info>
@@ -28,7 +30,5 @@ claude.ai connects to **AdLoop Cloud** only (remote connectors can't reach a ser
 
 - Connector access is workspace-wide for your tenant. Per-key restrictions (read-only, toolsets, client scoping) apply to API-key connections; the OAuth connector uses your tenant's full configuration.
 - Every write still goes through the [preview and confirm flow](/concepts/safety-model), regardless of client.
-
-import DocsMcp from "/snippets/docs-mcp.mdx";
 
 <DocsMcp />
