@@ -1,0 +1,67 @@
+---
+title: "Reddit Ads"
+description: "A second ad platform with the same tools and the same safety model."
+---
+
+AdLoop connects Reddit Ads next to Google Ads: performance reports, campaign structure, pixel health, targeting lookups, and changes that go through the same preview → dry run → `confirm_and_apply` gate as every Google change. New Reddit campaigns, ad groups and ads are created **PAUSED**.
+
+Reddit is a separate connection: its own OAuth grant, its own ad account selection. Google stays the first thing you set up; Reddit is added afterwards.
+
+## Connect
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    **Settings → Reddit Ads → Connect Reddit account.** Reddit's own consent dialog asks for `adsread` and `adsedit` (read and edit advertising data); AdLoop never sees your password. Then pick the ad account your AI may reach. Agencies pick a Reddit ad account per client under **Settings → Clients**.
+
+    Disconnecting revokes the grant at Reddit and deletes the stored token. Google and your API keys are untouched. You can also withdraw access at any time at [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps).
+  </Tab>
+  <Tab title="Self-hosted">
+    Reddit has no developer token and no approval process, but you need your own developer application:
+
+    1. In Reddit Ads Manager open **Business Manager → Developer Application → Create app** (business admins only).
+    2. Set the redirect URL to exactly `http://localhost:8765/callback`. Reddit requires an exact match, which is why the wizard uses a fixed port.
+    3. Run `adloop init` and complete the **Reddit Ads** step with the app ID and secret. It opens Reddit's consent page, stores the refresh token at `~/.adloop/reddit_token.json`, and lets you pick the default ad account.
+
+    Reddit throttles requests without a descriptive `User-Agent`; AdLoop builds one from your app ID and Reddit username (`reddit.username` in the config), or you set `reddit.user_agent` yourself.
+  </Tab>
+</Tabs>
+
+## What is different from Google Ads
+
+| | Google Ads | Reddit Ads |
+|---|---|---|
+| Account argument | `customer_id` | `ad_account_id` |
+| Structure | campaign → ad group → ad, keywords | campaign → ad group → ad (a post); targeting is communities, interests, keywords, geos, languages |
+| Budget | campaign budget | on the **ad group**, unless the campaign uses campaign budget optimization |
+| Status | `status` | `configured_status` (what you set) vs `effective_status` (what Reddit computes: `PENDING_APPROVAL`, `REJECTED`, `PENDING_BILLING_INFO`, …) |
+| Quality signals | quality score, search terms | pixel health (`get_reddit_pixels`), `rejection_reason` on ads |
+| Dry run | validated against the API | read-side preflight: the target is re-read and the safety caps re-checked; nothing is sent |
+| Rate limits | shared developer-token quota | per Reddit user (reporting: 60 requests/min) |
+
+Money is returned in the account's currency; Reddit's microcurrency is already divided. Report data lags up to six hours.
+
+## Tools
+
+Reads: `list_reddit_accounts`, `list_reddit_funding_instruments`, `get_reddit_campaigns`, `get_reddit_ad_groups`, `get_reddit_ads`, `get_reddit_performance` (with `compact` mode and `insights[]`), `run_reddit_report` (raw fields and breakdowns), `get_reddit_pixels`, `search_reddit_targeting`.
+
+Writes (all previewed): `pause_reddit_entity`, `enable_reddit_entity`, `remove_reddit_entity` (archive, irreversible, double confirmation), `update_reddit_campaign`, `update_reddit_ad_group`, `draft_reddit_campaign`, `draft_reddit_ad_group`, `draft_reddit_ad`.
+
+The full list with parameters is in the [tool reference](/reference/tools#reddit-ads-reddit); the toolset slug is `reddit`.
+
+## Building a campaign
+
+The order is campaign → ad group → ad, each created paused and each through its own preview:
+
+1. **Pixel first.** Every ad group needs a `conversion_pixel_id` (a Reddit rule since July 2026). `get_reddit_pixels` lists them and shows when each event last fired; a CONVERSIONS campaign on a pixel that never fired the optimization event cannot learn.
+2. `list_reddit_funding_instruments` for a servable billing instrument and the profile that will author the post.
+3. `search_reddit_targeting` for community, interest, geolocation and language ids. Untargeted ad groups are refused.
+4. `draft_reddit_campaign` → `draft_reddit_ad_group` (budget, bid, pixel, targeting) → `draft_reddit_ad` (headline, verified click URL, call to action).
+5. Enable the ad, then the ad group, then the campaign. Enabling an ad sends it to Reddit's policy review; expect `PENDING_APPROVAL` for up to a day, then check `get_reddit_ads` for a `rejection_reason`.
+
+## Operations and limits
+
+On AdLoop Cloud, Reddit calls count toward the same daily operations ceiling as Google Ads calls (both platforms together); Analytics, Tag Manager, Search Console and Merchant Center stay unmetered. The dashboard shows the split. Reddit never touches the shared Google quota.
+
+## What AdLoop stores
+
+An encrypted refresh token, your Reddit username, the granted scopes, and the selected ad account (id, name, currency, time zone). Campaign and performance data pass through and are never stored. See the [privacy policy](https://getadloop.com/privacy) for the full description.

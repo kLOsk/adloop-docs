@@ -16,7 +16,7 @@ Included with every toolset selection.
 | Tool | Type | What it does |
 |------|------|--------------|
 | `confirm_and_apply` | Destructive | Execute a previously previewed change. |
-| `health_check` | Read | Test AdLoop connectivity — checks OAuth token, GA4 API, and Google Ads API. |
+| `health_check` | Read | Test AdLoop connectivity — checks OAuth token, GA4 API, Google Ads API, |
 
 
 ## Google Ads (`ads`)
@@ -34,12 +34,15 @@ Google Ads reads, writes, and planning.
 | `draft_ad_group` | Write | Draft a new ad group within an existing campaign — returns a PREVIEW, does NOT create. |
 | `draft_callouts` | Write | Draft campaign callout assets — returns a PREVIEW. |
 | `draft_campaign` | Write | Draft a full campaign structure — returns a PREVIEW, does NOT create anything. |
+| `draft_create_conversion_action` | Write | Draft a new Google Ads ConversionAction — returns a PREVIEW. |
 | `draft_demographic_targeting` | Write | Draft demographic targeting (age/gender/parental status/income) — returns a PREVIEW. |
 | `draft_image_assets` | Write | Draft campaign image assets from local PNG, JPEG, or GIF files. |
 | `draft_keywords` | Write | Draft keyword additions — returns a PREVIEW, does NOT add keywords. |
+| `draft_remove_conversion_action` | Write | Draft a REMOVAL of a ConversionAction — returns a PREVIEW. |
 | `draft_responsive_search_ad` | Write | Draft a Responsive Search Ad — returns a PREVIEW, does NOT create the ad. |
 | `draft_sitelinks` | Write | Draft sitelink extensions for a campaign — returns a PREVIEW. |
 | `draft_structured_snippets` | Write | Draft campaign structured snippet assets — returns a PREVIEW. |
+| `draft_update_conversion_action` | Write | Draft a partial UPDATE of an existing ConversionAction — returns PREVIEW. |
 | `enable_entity` | Write | Draft enabling a paused campaign, ad group, ad, or keyword — returns a PREVIEW. |
 | `estimate_budget` | Read | Forecast clicks, cost, and conversions for a set of keywords. |
 | `get_ad_performance` | Read | Get ad-level performance data including headlines, descriptions, and metrics. |
@@ -63,6 +66,7 @@ Google Ads reads, writes, and planning.
 | `run_gaql` | Read | Execute an arbitrary GAQL (Google Ads Query Language) query. |
 | `update_ad_group` | Write | Draft an ad group update for name and/or manual CPC bid. |
 | `update_campaign` | Write | Draft an update to an existing campaign — returns a PREVIEW, does NOT apply. |
+| `update_responsive_search_ad` | Write | Update mutable fields on an existing RSA in place — returns a PREVIEW. |
 
 
 ## Google Analytics (`ga4`)
@@ -138,3 +142,28 @@ Merchant Center reads.
 |------|------|--------------|
 | `get_merchant_feed_health` | Read | Merchant Center feed health — disapproved products + account issues. |
 | `list_merchant_accounts` | Read | List Google Merchant Center accounts the connected user can access. |
+
+
+## Reddit Ads (`reddit`)
+
+Reddit Ads reads, writes, and planning.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `draft_reddit_ad` | Write | Draft a Reddit ad: creates a post on the profile, then the ad (PAUSED) — PREVIEW. |
+| `draft_reddit_ad_group` | Write | Draft a new Reddit ad group (created PAUSED) — returns a PREVIEW. |
+| `draft_reddit_campaign` | Write | Draft a new Reddit campaign (created PAUSED) — returns a PREVIEW. |
+| `enable_reddit_entity` | Write | Draft enabling (configured_status=ACTIVE) a Reddit campaign, ad group or ad — PREVIEW. |
+| `get_reddit_ad_groups` | Read | List Reddit ad groups (budget, bid, pixel, targeting summary), optionally per campaign. |
+| `get_reddit_ads` | Read | List Reddit ads with status, rejection_reason, post and click URL. |
+| `get_reddit_campaigns` | Read | List Reddit campaigns with status, objective, budget mode and bids. |
+| `get_reddit_performance` | Read | Reddit Ads performance: spend, impressions, clicks, CTR, CPC, conversions, CPA, ROAS. |
+| `get_reddit_pixels` | Read | Reddit pixels of the account and when each event (purchase, sign_up, lead, ...) last fired. |
+| `list_reddit_accounts` | Read | List Reddit businesses and ad accounts the connected Reddit user can access. |
+| `list_reddit_funding_instruments` | Read | Funding instruments (billing) and posting profiles of a Reddit ad account. |
+| `pause_reddit_entity` | Write | Draft pausing a Reddit campaign, ad group or ad — returns a PREVIEW. |
+| `remove_reddit_entity` | Destructive | Draft ARCHIVING a Reddit campaign, ad group or ad — irreversible, PREVIEW. |
+| `run_reddit_report` | Read | Run a custom Reddit Ads report for metrics get_reddit_performance omits. |
+| `search_reddit_targeting` | Read | Look up targeting options for draft_reddit_ad_group. |
+| `update_reddit_ad_group` | Write | Draft changes to a Reddit ad group — budget, bid, schedule, targeting. |
+| `update_reddit_campaign` | Write | Draft changes to a Reddit campaign — name, schedule, spend cap, and (CBO only) budget/bid. |

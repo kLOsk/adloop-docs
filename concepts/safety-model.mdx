@@ -11,14 +11,14 @@ Every write tool (`draft_campaign`, `add_negative_keywords`, `pause_entity`, ...
 
 ## Dry-run by default
 
-`confirm_and_apply` defaults to `dry_run=true`, which validates the change against the Google Ads API without applying it. Applying for real requires an explicit `dry_run=false`, and two settings can restrict it further:
+`confirm_and_apply` defaults to `dry_run=true`, which validates the change without applying it (for Reddit plans the dry run re-reads the target and re-checks the safety caps, because Reddit has no validate-only mode). Applying for real requires an explicit `dry_run=false`, and two settings can restrict it further:
 
 - **`require_dry_run`**: all real applies are refused until you disable this (self-hosted: `config.yaml`; Cloud: dashboard safety settings)
 - **Two-phase apply**: a plan must complete a dry-run pass before it can be applied for real (always on for Cloud tenants)
 
 ## Created paused
 
-New campaigns and ads are always created **PAUSED**. You review them in the Google Ads UI (or by chat) and enable them explicitly, via `enable_entity`, which itself goes through preview and confirm.
+New campaigns and ads are always created **PAUSED**, on Google Ads and Reddit Ads alike. You review them in the platform's UI (or by chat) and enable them explicitly, via `enable_entity` / `enable_reddit_entity`, which itself goes through preview and confirm.
 
 ## Budget caps
 

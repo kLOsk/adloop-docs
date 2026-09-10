@@ -22,6 +22,7 @@ LABELS = {
     "gsc": "Search Console",
     "web": "Web Performance",
     "merchant": "Merchant Center",
+    "reddit": "Reddit Ads",
 }
 
 HEADER = """---

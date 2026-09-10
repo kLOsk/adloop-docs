@@ -43,7 +43,8 @@
         "group": "AdLoop Cloud",
         "pages": [
           "cloud/api-keys",
-          "cloud/clients"
+          "cloud/clients",
+          "integrations/reddit-ads"
         ]
       },
       {
@@ -84,9 +85,18 @@
       {
         "header": "Legal",
         "items": [
-          { "label": "Impressum", "href": "https://getadloop.com/impressum" },
-          { "label": "Privacy / Datenschutz", "href": "https://getadloop.com/privacy" },
-          { "label": "Terms / AGB", "href": "https://getadloop.com/terms" }
+          {
+            "label": "Impressum",
+            "href": "https://getadloop.com/impressum"
+          },
+          {
+            "label": "Privacy / Datenschutz",
+            "href": "https://getadloop.com/privacy"
+          },
+          {
+            "label": "Terms / AGB",
+            "href": "https://getadloop.com/terms"
+          }
         ]
       }
     ]

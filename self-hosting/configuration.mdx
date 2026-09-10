@@ -17,6 +17,10 @@ All configuration lives in `~/.adloop/config.yaml`, created by `adloop init`. A 
 | `gsc` | `site_url` | *(empty)* | Search Console property (`https://example.com/` or `sc-domain:example.com`); empty = pass per call |
 | `gtm` | `account_id` / `container_id` | *(empty)* | Default GTM account/container; empty = pass per call |
 | `pagespeed` | `api_key` | *(empty)* | Optional API key for `analyze_page_speed` (keyless works at low rates) |
+| `reddit` | `client_id` / `client_secret` | *(empty)* | Your Reddit developer app (Business Manager → Developer Application); see [Reddit Ads](/integrations/reddit-ads) |
+| `reddit` | `ad_account_id` | *(empty)* | Default Reddit ad account for every Reddit tool (picked by the wizard) |
+| `reddit` | `username` | *(empty)* | Your Reddit username, only used in the User-Agent Reddit requires |
+| `reddit` | `token_path` | `~/.adloop/reddit_token.json` | Where the Reddit refresh token is stored |
 | `safety` | `max_daily_budget` | `50.00` | Maximum daily budget AdLoop can set per campaign |
 | `safety` | `require_dry_run` | `true` | Force all writes to dry-run mode |
 | `safety` | `two_phase_apply` | `false` | Refuse real applies until the plan had a dry-run pass |
