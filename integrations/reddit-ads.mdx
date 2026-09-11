@@ -56,7 +56,7 @@ The order is campaign → ad group → ad, each created paused and each through 
 2. `list_reddit_funding_instruments` for a servable billing instrument and the profile that will author the post.
 3. `search_reddit_targeting` for community, interest, geolocation and language ids (`community_suggestions` finds related subreddits). Untargeted ad groups are refused.
 3a. `estimate_reddit_ad_group` with the same targeting and budget: audience size, expected delivery, and Reddit's suggested bid range.
-4. `draft_reddit_campaign` → `draft_reddit_ad_group` (budget, bid, pixel, targeting) → `draft_reddit_ad` (headline, verified click URL, call to action).
+4. `draft_reddit_campaign` → `draft_reddit_ad_group` (budget, bid, pixel, targeting) → `draft_reddit_ad` (headline, verified click URL, call to action). An IMAGE ad clicks through to the landing page; a TEXT ad clicks through to the post itself, so the link has to be in the body (the tool insists on it). Posts cannot be edited afterwards.
 5. Enable the ad, then the ad group, then the campaign. Enabling an ad sends it to Reddit's policy review; expect `PENDING_APPROVAL` for up to a day, then check `get_reddit_ads` for a `rejection_reason`.
 
 ## Operations and limits
