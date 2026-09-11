@@ -32,6 +32,14 @@ Your Google Cloud consent screen is in "Testing" status. Publish it to **In prod
 
 The key was created with a [toolset restriction](/concepts/toolsets) and the AI called a tool outside it. Use a key that includes the toolset, or create one in **Settings → API keys**. Retrying with the same key won't help.
 
+## New tools don't show up in claude.ai (Cloud)
+
+claude.ai lists a connector's tools once and caches them. After AdLoop adds tools (for example when you connect [Reddit Ads](/integrations/reddit-ads)), refresh the list under **Settings → Connectors → AdLoop**; Claude Code and Cursor pick new tools up on their next start. There is no server-side push for this: the MCP endpoint is stateless, so clients only re-list when they reconnect.
+
+## "This workspace is on the solo plan…" (Cloud)
+
+Not a permissions problem. Solo workspaces manage exactly one account pairing (one Ads account, one GA4 property, one Reddit ad account), and a call naming any other account is refused before it reaches Google or Reddit. Either change the workspace selection under **Settings → Google** / **Settings → Reddit Ads**, or move to the agency plan, which adds client profiles and per-call account overrides so several accounts can be analyzed side by side.
+
 ## Ads clicks don't match GA4 sessions
 
 Almost always EU consent behavior, not broken tracking. Read [Consent and data gaps](/concepts/consent-and-data) before changing anything.
