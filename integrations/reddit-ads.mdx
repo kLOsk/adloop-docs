@@ -42,9 +42,9 @@ Money is returned in the account's currency; Reddit's microcurrency is already d
 
 ## Tools
 
-Reads: `list_reddit_accounts`, `list_reddit_funding_instruments`, `get_reddit_campaigns`, `get_reddit_ad_groups`, `get_reddit_ads`, `get_reddit_performance` (with `compact` mode and `insights[]`), `run_reddit_report` (raw fields and breakdowns), `get_reddit_pixels`, `search_reddit_targeting`.
+Reads: `list_reddit_accounts`, `list_reddit_funding_instruments`, `get_reddit_campaigns`, `get_reddit_ad_groups`, `get_reddit_ads`, `get_reddit_performance` (with `compact` mode and `insights[]`), `run_reddit_report` (raw fields and breakdowns), `get_reddit_pixels`, `search_reddit_targeting` (including Reddit's related-community suggestions), `get_reddit_account_history` (who changed what), `estimate_reddit_ad_group` (audience, delivery and bid estimates before you build).
 
-Writes (all previewed): `pause_reddit_entity`, `enable_reddit_entity`, `remove_reddit_entity` (archive, irreversible, double confirmation), `update_reddit_campaign`, `update_reddit_ad_group`, `draft_reddit_campaign`, `draft_reddit_ad_group`, `draft_reddit_ad`.
+Writes (all previewed): `pause_reddit_entity`, `enable_reddit_entity`, `remove_reddit_entity` (archive, irreversible, double confirmation), `update_reddit_campaign`, `update_reddit_ad_group`, `update_reddit_ad` (landing URL, name, comments), `draft_reddit_campaign`, `draft_reddit_ad_group`, `draft_reddit_ad`. Keywords and geolocations in an ad-group draft are validated with Reddit before the preview.
 
 The full list with parameters is in the [tool reference](/reference/tools#reddit-ads-reddit); the toolset slug is `reddit`.
 
@@ -54,7 +54,8 @@ The order is campaign → ad group → ad, each created paused and each through 
 
 1. **Pixel first.** Every ad group needs a `conversion_pixel_id` (a Reddit rule since July 2026). `get_reddit_pixels` lists them and shows when each event last fired; a CONVERSIONS campaign on a pixel that never fired the optimization event cannot learn.
 2. `list_reddit_funding_instruments` for a servable billing instrument and the profile that will author the post.
-3. `search_reddit_targeting` for community, interest, geolocation and language ids. Untargeted ad groups are refused.
+3. `search_reddit_targeting` for community, interest, geolocation and language ids (`community_suggestions` finds related subreddits). Untargeted ad groups are refused.
+3a. `estimate_reddit_ad_group` with the same targeting and budget: audience size, expected delivery, and Reddit's suggested bid range.
 4. `draft_reddit_campaign` → `draft_reddit_ad_group` (budget, bid, pixel, targeting) → `draft_reddit_ad` (headline, verified click URL, call to action).
 5. Enable the ad, then the ad group, then the campaign. Enabling an ad sends it to Reddit's policy review; expect `PENDING_APPROVAL` for up to a day, then check `get_reddit_ads` for a `rejection_reason`.
 
