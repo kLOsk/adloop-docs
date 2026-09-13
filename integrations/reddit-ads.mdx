@@ -51,6 +51,10 @@ Reads: `list_reddit_accounts`, `list_reddit_funding_instruments`, `get_reddit_ca
 
 Writes (all previewed): `pause_reddit_entity`, `enable_reddit_entity`, `remove_reddit_entity` (archive, irreversible, double confirmation), `update_reddit_campaign`, `update_reddit_ad_group`, `update_reddit_ad` (landing URL, name, comments), `draft_reddit_campaign`, `draft_reddit_ad_group`, `draft_reddit_ad`. Keywords and geolocations in an ad-group draft are validated with Reddit before the preview.
 
+### Creative
+
+`get_reddit_ads` with `include_copy=true` returns each ad's post: type (TEXT, IMAGE, VIDEO, CAROUSEL), headline, body, destination URL, call to action and media, one request per distinct post, so a creative review does not need a browser. `draft_reddit_ad` either creates a post and the ad, or with `post_id` promotes a post that already exists, keeping its upvotes and comments. Two Reddit rules the tools enforce before the dry run: a live post's headline and body cannot be edited (draft a new post for new copy), and a TEXT ("free form") ad carries no `click_url` at all, because it opens the post itself and the link has to be in the body. Placements are the `locations` list on the ad group: `FEED` and/or `COMMENTS_PAGE`.
+
 The full list with parameters is in the [tool reference](/reference/tools#reddit-ads-reddit); the toolset slug is `reddit`.
 
 ## Building a campaign
