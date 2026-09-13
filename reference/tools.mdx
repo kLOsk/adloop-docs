@@ -156,7 +156,7 @@ Reddit Ads reads, writes, and planning.
 | `enable_reddit_entity` | Write | Draft enabling (configured_status=ACTIVE) a Reddit campaign, ad group or ad — PREVIEW. |
 | `estimate_reddit_ad_group` | Read | Audience size, delivery estimate and Reddit's suggested bid for a planned ad group — read-only. |
 | `get_reddit_account_history` | Read | Who changed what in the Reddit ad account: field, before/after, member, time. |
-| `get_reddit_ad_groups` | Read | List Reddit ad groups (budget, bid, pixel, targeting summary), optionally per campaign. |
+| `get_reddit_ad_groups` | Read | List Reddit ad groups (budget, bid, pixel, weekly schedule, targeting summary), optionally per campaign. |
 | `get_reddit_ads` | Read | List Reddit ads with status, rejection_reason, post and click URL. |
 | `get_reddit_campaigns` | Read | List Reddit campaigns with status, objective, budget mode and bids. |
 | `get_reddit_performance` | Read | Reddit Ads performance: spend, impressions, clicks, CTR, CPC, conversions, CPA, ROAS. |
@@ -168,5 +168,5 @@ Reddit Ads reads, writes, and planning.
 | `run_reddit_report` | Read | Run a custom Reddit Ads report for metrics get_reddit_performance omits. |
 | `search_reddit_targeting` | Read | Look up targeting options for draft_reddit_ad_group. |
 | `update_reddit_ad` | Write | Draft changes to a Reddit ad — name, landing URL (click_url), comments on/off. |
-| `update_reddit_ad_group` | Write | Draft changes to a Reddit ad group — budget, bid, schedule, targeting. |
-| `update_reddit_campaign` | Write | Draft changes to a Reddit campaign — name, schedule, spend cap, and (CBO only) budget/bid. |
+| `update_reddit_ad_group` | Write | Draft changes to a Reddit ad group — budget, bid, run dates, weekly schedule, targeting. |
+| `update_reddit_campaign` | Write | Draft changes to a Reddit campaign — name, run dates, spend cap, and (CBO only) budget/bid/schedule. |

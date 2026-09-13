@@ -37,8 +37,13 @@ Reddit is a separate connection: its own OAuth grant, its own ad account selecti
 | Quality signals | quality score, search terms | pixel health (`get_reddit_pixels`), `rejection_reason` on ads |
 | Dry run | validated against the API | read-side preflight: the target is re-read and the safety caps re-checked; nothing is sent |
 | Rate limits | shared developer-token quota | per Reddit user (reporting: 60 requests/min) |
+| Ad schedule | campaign ad schedule, account time zone | `schedule` on the ad group (or on a CBO campaign), applied in each **viewer's** local time |
 
 Money is returned in the account's currency; Reddit's microcurrency is already divided. Report data lags up to six hours.
+
+### Weekly schedules
+
+Ads Manager's "time of day" grid is the ad group's `schedule`: a list of blocks such as `{"days": "MON-FRI", "start_hour": 13, "end_hour": 23}` (day names, hours 0 to 23, `end_hour` inclusive) or the native `{"start_day": "FRI", "start_hour": 22, "end_day": "SAT", "end_hour": 3}` for overnight windows. `get_reddit_ad_groups` returns it with a readable `schedule_summary` (`Mon–Fri 13:00–23:59`, or `any time`); `update_reddit_ad_group` and `draft_reddit_ad_group` accept it, and `[]` clears it. Two things worth knowing: Reddit applies the hours in each viewer's local time, so a European account keeps delivering to US viewers until the next morning, and zero impressions outside the schedule, a whole weekend included, is by design. The tools say so in `insights[]` before you go looking for a fault.
 
 ## Tools
 
