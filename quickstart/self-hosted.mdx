@@ -8,8 +8,8 @@ The open-source edition runs on your machine and uses your own (free) Google Clo
 ## Requirements
 
 - Python 3.11+
-- A Google Ads account with an MCC (Manager Account) and a [developer token](https://ads.google.com/aw/apicenter)
-- A Google Cloud project with OAuth credentials (the wizard walks you through creating one, see [Google Cloud project setup](/self-hosting/google-cloud-project))
+- A Google Ads account (a Manager Account is optional; only needed to reach several accounts through one login)
+- A Google Cloud project with OAuth credentials and Google Ads API access (the wizard walks you through it, see [Google Cloud project setup](/self-hosting/google-cloud-project)). No developer token since September 2026.
 
 ## Run the wizard
 
@@ -21,7 +21,7 @@ adloop init
 The wizard walks you through:
 
 1. **Google Cloud setup**: your project, the required APIs, an OAuth client
-2. **Developer token and MCC account ID**
+2. **API access and MCC account ID**: both optional prompts now; access is applied for on the Cloud project, the MCC only matters with a Manager Account
 3. **OAuth sign-in**: opens a browser, or prints a URL on headless servers
 4. **Account discovery**: finds your GA4 properties and Ads accounts automatically
 5. **Optional services**: pin a GTM container and Search Console property (auto-discovered), store a PageSpeed API key. Skip any step with Enter.
@@ -42,5 +42,5 @@ claude mcp add --transport stdio adloop -- python -m adloop
 For other clients, see [Connect your AI](/connect/claude-code).
 
 <Tip>
-Prefer zero setup? [AdLoop Cloud](/quickstart/cloud) runs the same tools without a Google Cloud project or developer token.
+Prefer zero setup? [AdLoop Cloud](/quickstart/cloud) runs the same tools without a Google Cloud project or an API access application.
 </Tip>

@@ -16,9 +16,25 @@ Self-hosted AdLoop uses your own Google Cloud project: no shared user caps, no d
     **APIs & Services → Credentials → Create credentials → OAuth client ID**, application type **Desktop app**. Download the JSON; the wizard copies it to `~/.adloop/credentials.json`.
   </Step>
   <Step title="Configure the consent screen">
-    Add yourself as a test user, or publish the app to **In production** (recommended: tokens for apps left in "Testing" expire every 7 days).
+    Add yourself as a test user, or publish the app to **In production** (recommended: tokens for apps left in "Testing" expire every 7 days, and Basic API access below requires it).
+  </Step>
+  <Step title="Apply for Google Ads API access">
+    Since 9 September 2026, Google Ads API access belongs to the Cloud project that owns your OAuth client. Developer tokens are sunset and no Manager Account is needed. Open the project's [Google Ads API Overview page](https://console.cloud.google.com/google/ads-apis/overview) and click **Upgrade access level**:
+
+    | Level | How | Allows |
+    |---|---|---|
+    | Test | automatic once the API is enabled | test accounts only |
+    | Explorer | apply; usually granted automatically | 2,880 operations/day on production accounts |
+    | Basic | apply; reviewed automatically within minutes once the consent screen is External and In production | 15,000 operations/day |
+    | Standard | apply; manual review, about ten business days | higher limits, Google's RMF policy applies |
+
+    A project on a Cloud free trial or with billing disabled is refused Explorer and Basic.
   </Step>
 </Steps>
+
+<Note>
+`CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION` (or `DEVELOPER_TOKEN_NOT_APPROVED` on older API versions) means the project is still at Test level. Apply for Explorer access; nothing in AdLoop's configuration needs to change.
+</Note>
 
 <Warning>
 If your OAuth token keeps expiring weekly, your consent screen is still in "Testing". Publish it to "In production" in the Google Cloud Console.

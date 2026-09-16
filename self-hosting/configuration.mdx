@@ -11,9 +11,9 @@ All configuration lives in `~/.adloop/config.yaml`, created by `adloop init`. A 
 | `google` | `credentials_path` | *(empty)* | Path to OAuth client JSON or service account key. Empty = `~/.adloop/credentials.json`, else Application Default Credentials |
 | `google` | `token_path` | `~/.adloop/token.json` | Where the OAuth token is stored (auto-created) |
 | `ga4` | `property_id` | — | Your GA4 property ID (auto-discovered by the wizard) |
-| `ads` | `developer_token` | — | Your Google Ads API developer token |
+| `ads` | `developer_token` | — | Legacy, optional: API access belongs to your Cloud project since September 2026 |
 | `ads` | `customer_id` | — | Default Ads customer ID (auto-discovered by the wizard) |
-| `ads` | `login_customer_id` | — | Your MCC account ID |
+| `ads` | `login_customer_id` | — | Your MCC account ID, only with a Manager Account |
 | `gsc` | `site_url` | *(empty)* | Search Console property (`https://example.com/` or `sc-domain:example.com`); empty = pass per call |
 | `gtm` | `account_id` / `container_id` | *(empty)* | Default GTM account/container; empty = pass per call |
 | `pagespeed` | `api_key` | *(empty)* | Optional API key for `analyze_page_speed` (keyless works at low rates) |
