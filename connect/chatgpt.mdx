@@ -4,30 +4,45 @@ description: "Add AdLoop Cloud to ChatGPT via developer mode."
 ---
 
 <Info>
-ChatGPT connects to **AdLoop Cloud** (remote MCP servers). MCP support requires developer mode, available on paid ChatGPT plans.
+ChatGPT connects to **AdLoop Cloud** (remote MCP servers) as a custom **plugin**. Custom plugins are available on paid ChatGPT plans and need developer mode, which moved to the security settings (checked 2026-09-16).
 </Info>
 
 <Steps>
-  <Step title="Enable developer mode">
-    **Settings → Connectors → Advanced → Developer mode**.
+  <Step title="Turn on developer mode">
+    **Settings → Security and login → Developer mode** (marked "elevated risk": it allows unverified connectors). Once per account.
   </Step>
-  <Step title="Add the AdLoop server">
-    Create a new connector with the endpoint:
+  <Step title="Open Plugins">
+    In the ChatGPT sidebar click **Plugins** (or go to [chatgpt.com/plugins](https://chatgpt.com/plugins)), then the **+** button at the top right: **New Plugin**.
+  </Step>
+  <Step title="Describe the server">
+    Name it **AdLoop**. Connection: **Server URL** with
 
     ```
     https://mcp.getadloop.com/mcp
     ```
 
-    Choose OAuth authentication. ChatGPT redirects you to AdLoop's consent page where you sign in and approve.
+    Authentication: **OAuth** (leave the advanced settings alone; ChatGPT discovers them from the server). Tick *I understand and want to continue* under the custom-server warning and click **Create**.
   </Step>
-  <Step title="Verify">
-    In a chat with the connector enabled, ask: *"Run the AdLoop health check."*
+  <Step title="Authorize">
+    ChatGPT opens AdLoop's consent page: sign in to your workspace and choose **Allow access**. The token is issued to chatgpt.com only.
+  </Step>
+  <Step title="Use it in a chat">
+    Click **+** next to the message box and pick AdLoop (or type its name). Then ask: *"Run the AdLoop health check."*
   </Step>
 </Steps>
 
+## Agencies
+
+A ChatGPT connection is workspace-wide, not tied to one of your clients. Name the client in your request ("for Kersten Coating, how did last week go?") or let the assistant ask; it gets your client list with their account ids when a request doesn't say.
+
+## OpenAI Agent Builder
+
+In a workspace agent (Business plans), add AdLoop as an **MCP** tool with the same server URL and OAuth authentication; the consent flow is identical.
+
 ## Notes
 
-- ChatGPT's MCP support evolves quickly; if connector options moved, look for "Connectors" or "Apps" in settings.
+- ChatGPT moves this around: before September 2026 it lived under Settings → Connectors → Advanced. If the Plugins page or the developer-mode switch look different, search settings for "plugin", "developer" or "MCP".
+- ChatGPT asks before a plugin's write actions (Settings → Plugins → Permissions); AdLoop previews and dry-runs every write on top of that.
 - Every write goes through the [preview and confirm flow](/concepts/safety-model) regardless of client, so an over-eager agent can't apply anything without you.
 
 <Tip>
