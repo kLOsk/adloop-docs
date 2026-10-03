@@ -40,11 +40,24 @@
         ]
       },
       {
+        "group": "Integrations",
+        "pages": [
+          "integrations/google-ads",
+          "integrations/google-analytics",
+          "integrations/tag-manager",
+          "integrations/search-console",
+          "integrations/merchant-center",
+          "integrations/pagespeed",
+          "integrations/tracking-audit",
+          "integrations/reddit-ads"
+        ]
+      },
+      {
         "group": "AdLoop Cloud",
         "pages": [
           "cloud/api-keys",
           "cloud/clients",
-          "integrations/reddit-ads"
+          "cloud/plans-and-limits"
         ]
       },
       {

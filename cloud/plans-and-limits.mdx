@@ -1,0 +1,38 @@
+---
+title: "Plans and limits"
+description: "What counts as an operation, how much each plan includes, and what happens at the limit."
+---
+
+AdLoop Cloud measures one thing: **ad platform operations**, the calls your AI makes to Google Ads and Reddit Ads. Everything else (Analytics, Tag Manager, Search Console, Merchant Center, PageSpeed) is unmetered on every plan, including Free.
+
+## Plans
+
+| | Free | Pro | Agency |
+|---|---|---|---|
+| Ad platform operations per day | 100 | No limit in normal use (fair use: 2,000) | No limit in normal use (fair use: 5,000) |
+| Analytics, Tag Manager, Search Console, Merchant Center, PageSpeed | Unmetered | Unmetered | Unmetered |
+| Accounts | 1 Ads account + 1 GA4 property | 1 Ads account + 1 GA4 property | Unlimited [client profiles](/cloud/clients) |
+| Writes with preview, dry run and budget cap | Yes | Yes | Yes |
+| API keys | Yes | Yes | Also scoped to single clients |
+| Credit card | Not needed | Required | Required |
+
+Free has no time limit. Prices are on the [pricing page](https://getadloop.com/preise); you book or change a plan under **Settings → Billing**.
+
+The fair-use ceilings on Pro and Agency sit far above anything a real workspace has used. They exist so a runaway script stops somewhere.
+
+## What counts as an operation
+
+Every Google Ads or Reddit Ads tool call is one operation, reads and drafts alike. The two platforms count together against one daily number.
+
+- **`confirm_and_apply`** counts toward the platform of the plan it applies. Applying a GA4 key event doesn't count.
+- **Cross-channel tools** that query Google Ads (`analyze_campaign_conversions`, `landing_page_analysis`, `attribution_check`) count as Google Ads operations.
+- **Not counted:** `health_check` and `list_accounts`, so checking that everything works never costs you operations.
+- **Refused calls aren't counted.** A call that stops before reaching the ad platform (setup not finished, a read-only key, a toolset the key doesn't include, the limit itself) shows up as activity but costs nothing.
+
+## The daily limit
+
+The count resets at **midnight UTC**. The dashboard shows today's usage, and you get one email per day when a workspace passes 80% of its limit, so the limit is never the first sign.
+
+At the limit, Google Ads and Reddit Ads tools are refused with a message that says which limit was reached and when it resets. Analytics, Tag Manager, Search Console, Merchant Center and PageSpeed keep working, and so do `health_check` and `list_accounts`.
+
+Plan limits apply to workspaces created since 10 September 2026, and to every workspace from 15 October 2026.

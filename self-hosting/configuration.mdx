@@ -22,6 +22,7 @@ All configuration lives in `~/.adloop/config.yaml`, created by `adloop init`. A 
 | `reddit` | `username` | *(empty)* | Your Reddit username, only used in the User-Agent Reddit requires |
 | `reddit` | `token_path` | `~/.adloop/reddit_token.json` | Where the Reddit refresh token is stored |
 | `safety` | `max_daily_budget` | `50.00` | Maximum daily budget AdLoop can set per campaign |
+| `safety` | `max_bid_increase_pct` | `100` | Largest bid raise one change may make, in percent (Google Ads CPC bids and Maximize Clicks ceilings, Reddit bids) |
 | `safety` | `require_dry_run` | `true` | Force all writes to dry-run mode |
 | `safety` | `two_phase_apply` | `false` | Refuse real applies until the plan had a dry-run pass |
 | `safety` | `blocked_operations` | `[]` | Operations to block entirely |

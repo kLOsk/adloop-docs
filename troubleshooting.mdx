@@ -46,4 +46,12 @@ Almost always EU consent behavior, not broken tracking. Read [Consent and data g
 
 ## A write was refused
 
-That's usually the [safety model](/concepts/safety-model) doing its job: budget above `max_daily_budget`, broad match on manual CPC, missing geo/language targeting, or a read-only key hitting a write tool. The refusal message names the reason and where to change the setting.
+That's usually the [safety model](/concepts/safety-model) doing its job: budget above `max_daily_budget`, a bid raised beyond `max_bid_increase_pct`, broad match on manual CPC, missing geo/language targeting, or a read-only key hitting a write tool. The refusal message names the reason and where to change the setting.
+
+## `DRY_RUN_FAILED`
+
+The dry run checked the change with the ad platform and the platform rejected it. For Google Ads the error is Google's own, for example `[mutate_error=RESOURCE_NOT_FOUND] Resource was not found.` when the ad group no longer exists. The real apply would fail the same way, so fix the cause and draft the change again. On AdLoop Cloud (and self-hosted with `two_phase_apply`), a plan whose dry run failed can't be applied.
+
+## "Your workspace reached its daily ad platform operation limit" (Cloud)
+
+Google Ads and Reddit Ads calls count together against a daily limit that resets at midnight UTC. Analytics, Tag Manager, Search Console and Merchant Center keep working, and so does `health_check`. See [plans and limits](/cloud/plans-and-limits) for what counts and how much each plan includes.

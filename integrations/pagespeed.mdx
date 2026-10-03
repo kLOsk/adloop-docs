@@ -1,0 +1,45 @@
+---
+title: "PageSpeed"
+description: "Lighthouse and real-user Core Web Vitals for your landing pages."
+---
+
+A slow landing page lowers Quality Score, raises click costs and loses visitors before the page has rendered. `analyze_page_speed` runs Google PageSpeed Insights on a URL and returns two views of it: a **Lighthouse** lab test, and **field data** from real Chrome users (the Chrome UX Report) where Google has enough of it.
+
+No Google account is involved: PageSpeed Insights fetches the page itself, so there is nothing to connect.
+
+## Set up
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    Nothing to set up. Include the `web` toolset in your API key, or leave the key unrestricted ([toolsets](/concepts/toolsets)).
+  </Tab>
+  <Tab title="Self-hosted">
+    It works without configuration, but keyless requests share a very low quota and can fail with `429`. For a stable quota, enable the **PageSpeed Insights API** in your [Google Cloud project](/self-hosting/google-cloud-project), create an API key under **APIs & Services → Credentials**, and store it as `pagespeed.api_key` (the `adloop init` wizard offers this step). See the [configuration reference](/self-hosting/configuration).
+  </Tab>
+</Tabs>
+
+## What you get
+
+- **Performance score** from 0 to 100.
+- **Lab metrics:** Largest Contentful Paint, Cumulative Layout Shift, Total Blocking Time, First Contentful Paint.
+- **Field metrics** over the last 28 days: the 75th percentile for LCP, Interaction to Next Paint and CLS, each rated fast, average or slow, plus an overall rating.
+- **Top opportunities:** the largest Lighthouse improvements with their estimated savings.
+- **Insights** that flag a score below 50, a slow real-user rating, or an LCP above the 2.5 second threshold.
+
+## Behaviour worth knowing
+
+- **Mobile by default**, because that's where most paid traffic lands; pass `strategy="desktop"` for the other view.
+- **A run takes 10 to 30 seconds.** That's Lighthouse loading the page, not a hang.
+- **Field data beats lab data.** Lab numbers come from a simulated load. When the two disagree, trust the real-user numbers. No field data means the page has too little Chrome traffic, not that it's fast.
+- **Public pages only.** Google fetches the URL from its own servers, so localhost, staging behind a login or pages blocked by a firewall can't be measured.
+- It pairs with [`landing_page_analysis`](/integrations/tracking-audit#tools): a page with paid traffic, no conversions and a poor score needs speed work before new ad copy.
+
+## Tools
+
+- `analyze_page_speed`: PageSpeed Insights for one URL
+
+Parameters are in the [tool reference](/reference/tools#web-performance-web); the toolset slug is `web`.
+
+## Limits and storage
+
+On AdLoop Cloud, PageSpeed calls are unmetered on every plan; see [plans and limits](/cloud/plans-and-limits). AdLoop stores nothing for this tool: the URL and the results pass through.

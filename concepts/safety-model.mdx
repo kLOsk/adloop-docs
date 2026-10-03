@@ -11,22 +11,31 @@ Every write tool (`draft_campaign`, `add_negative_keywords`, `pause_entity`, ...
 
 ## Dry-run by default
 
-`confirm_and_apply` defaults to `dry_run=true`, which validates the change without applying it (for Reddit plans the dry run re-reads the target and re-checks the safety caps, because Reddit has no validate-only mode). Applying for real requires an explicit `dry_run=false`, and two settings can restrict it further:
+`confirm_and_apply` defaults to `dry_run=true`, which checks the change without applying it:
+
+- **Google Ads**: the exact change is sent to Google with `validate_only`. Google checks it the way it would check the real thing (field values, policy, whether the campaign or ad group exists) and executes nothing. If a change builds on something an earlier step would create, such as keywords for a new negative keyword list, the later step can't be checked yet and is reported as skipped.
+- **Reddit Ads**: Reddit has no validate-only mode, so the dry run re-reads the target and re-checks the safety caps; nothing is sent.
+
+A failed dry run (`DRY_RUN_FAILED`) carries the platform's error and means the real apply would fail the same way. Applying for real requires an explicit `dry_run=false`, and two settings can restrict it further:
 
 - **`require_dry_run`**: all real applies are refused until you disable this (self-hosted: `config.yaml`; Cloud: dashboard safety settings)
-- **Two-phase apply**: a plan must complete a dry-run pass before it can be applied for real (always on for Cloud tenants)
+- **Two-phase apply**: a plan must pass a dry run before it can be applied for real (always on for Cloud tenants). A failed dry run doesn't count, so a change the platform rejects can't be applied.
 
 ## Created paused
 
-New campaigns and ads are always created **PAUSED**, on Google Ads and Reddit Ads alike. You review them in the platform's UI (or by chat) and enable them explicitly, via `enable_entity` / `enable_reddit_entity`, which itself goes through preview and confirm.
+New campaigns and ads are always created **PAUSED**, on Google Ads and Reddit Ads alike, and so are new Reddit ad groups. A new Google Ads ad group is created enabled, but it can't serve until one of its ads is enabled. You review everything in the platform's UI (or by chat) and enable it explicitly, via `enable_entity` / `enable_reddit_entity`, which itself goes through preview and confirm.
 
 ## Budget caps
 
-`max_daily_budget` caps every budget AdLoop can set. Drafts above the cap are rejected at draft time, before anything reaches Google. Cloud additionally enforces daily operation limits per workspace.
+`max_daily_budget` caps every budget AdLoop can set. Drafts above the cap are rejected at draft time, before anything reaches the ad platform. Cloud additionally enforces [daily operation limits](/cloud/plans-and-limits) per workspace.
+
+## Bid caps
+
+`max_bid_increase_pct` (default 100%) limits how far a single change can raise a bid: a Google Ads ad group's manual CPC, a Maximize Clicks CPC ceiling, and Reddit ad group bids. Raising €2.00 to €5.00 is refused at draft time at the default. A first-time ceiling has nothing to compare against and isn't capped.
 
 ## Guardrails against classic money-wasters
 
-- **Broad Match + Manual CPC is refused.** Broad match keywords without smart bidding are the most common cause of wasted spend; the draft tools reject the combination.
+- **Broad Match + Manual CPC is refused.** Broad match keywords without smart bidding are the most common cause of wasted spend. Creating a campaign with that combination is refused; adding broad keywords to an existing manual-CPC ad group is flagged in the preview.
 - **Campaigns require geo and language targeting.** Untargeted campaigns serve globally and waste budget; drafts without targeting are rejected.
 - **URLs are validated.** Ads and sitelinks pointing at unreachable pages are rejected at draft time.
 

@@ -1,0 +1,51 @@
+---
+title: "Search Console"
+description: "Organic search data next to your paid campaigns."
+---
+
+AdLoop reads Google Search Console's search analytics: clicks, impressions, click-through rate and average position, broken down by query, page, country, device or date. Next to Google Ads data that answers questions like "am I paying for clicks I'd get organically anyway?", "which organic queries should I bid on?" and "which pages lost traffic, and when?".
+
+Access is **read-only** (`webmasters.readonly`).
+
+## Connect
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    When you connect Google, leave **Search Console** ticked under **Access for your AI** ("Read search data"). Then pick a property, during onboarding or later under **Settings → Google & accounts → Change**. Both kinds are listed: a **domain property** (`sc-domain:example.com`, covers every subdomain and protocol) and a **URL property** (`https://example.com/`, only that prefix).
+
+    Choosing a property is optional. Without one, your AI passes the property on each call (it finds them with `list_gsc_sites`). Agencies pick a property per client under **Settings → Clients**.
+
+    If the page says **Permission missing — reconnect Google to enable Search Console**, click **Reconnect** and approve the permission; your other selections stay as they are.
+  </Tab>
+  <Tab title="Self-hosted">
+    1. Enable the **Search Console API** in your [Google Cloud project](/self-hosting/google-cloud-project).
+    2. Run `adloop init`. The optional services step discovers your properties and lets you pin one as `gsc.site_url` in the [config](/self-hosting/configuration), written exactly as Search Console shows it (`https://example.com/` or `sc-domain:example.com`). Leave it empty and the tools take `site_url` per call.
+
+    Your Google account needs access to the property in Search Console.
+  </Tab>
+</Tabs>
+
+## Behaviour worth knowing
+
+- **Data lags about two days.** Don't compare a Search Console window with an Ads or GA4 window that ends today; end both a few days back.
+- **Search types.** `web` by default; also `image`, `video`, `news`, `discover` and `googleNews`.
+- **Filters.** Narrow a report by query, page, country or device, for example only queries containing your brand name.
+- **Rows.** 100 by default, up to 25,000 per report. There is no paging beyond that, so filter or shorten the date range for very large sites.
+- **Dates** take ISO dates or relative values such as `28daysAgo` and `today`.
+
+## Tools
+
+- `list_gsc_sites`: the properties your Google account can access, with your permission level
+- `run_gsc_report`: a search analytics report for one property
+
+Parameters are in the [tool reference](/reference/tools#search-console-gsc); the toolset slug is `gsc` ([toolsets](/concepts/toolsets)).
+
+## Limits
+
+- Only search analytics is covered. Sitemaps, URL inspection and indexing reports are not part of AdLoop.
+- On AdLoop Cloud, Search Console calls are unmetered on every plan; see [plans and limits](/cloud/plans-and-limits).
+- On a solo plan or a client-scoped key, calls for a property other than the selected one are refused.
+
+## What AdLoop stores
+
+On AdLoop Cloud: the selected property URL, next to your encrypted Google token. Search data passes through and is never stored. Self-hosted: only `gsc.site_url` in `config.yaml`.

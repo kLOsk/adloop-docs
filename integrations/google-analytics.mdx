@@ -1,0 +1,58 @@
+---
+title: "Google Analytics"
+description: "GA4 reports, realtime checks and key events, next to your ad data."
+---
+
+AdLoop reads your GA4 property: custom reports with any dimensions and metrics, realtime data, and the events the property receives. It can also mark an event as a key event, through the same preview → `confirm_and_apply` gate as every other write. Combined with [Google Ads](/integrations/google-ads), it answers the questions neither tool answers alone: real cost per conversion, landing pages that get paid traffic but do not convert, and whether conversions are tracked at all.
+
+Analytics shares one Google connection with Google Ads, Tag Manager, Search Console and Merchant Center.
+
+## Connect
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    The onboarding wizard (later: **Settings → Google & accounts → Connect Google account**) asks which Google products your AI may use. Keep **Google Analytics (GA4)** ticked; Google's consent dialog then asks to view your Analytics data and to manage your Analytics settings. The edit permission is only used by `draft_key_event`; Google has no narrower permission for it.
+
+    Then pick the property. **I do not use Google Analytics** switches the Analytics tools off; a workspace needs at least one of Google Ads or Analytics. Agencies pick a property per client under **Settings → Clients** (see [Clients](/cloud/clients)).
+
+    If you untick the edit permission in Google's dialog, reports keep working and only key events are unavailable; the dashboard shows the missing permission, and reconnecting restores it with all settings kept.
+  </Tab>
+  <Tab title="Self-hosted">
+    Enable the **Google Analytics Data API** and the **Google Analytics Admin API** in your Cloud project (see [Google Cloud project setup](/self-hosting/google-cloud-project)). `adloop init` signs you in, finds your properties and stores the default as `ga4.property_id`; every Analytics tool also takes a `property_id` argument for another property.
+
+    The sign-in asks for Analytics read and edit access in one go. A token from before AdLoop needed a permission triggers a fresh consent automatically, see [Troubleshooting](/troubleshooting).
+  </Tab>
+</Tabs>
+
+## Behaviour worth knowing
+
+- **GA4's own names.** `run_ga4_report` takes dimensions and metrics by their GA4 API names (`sessionSource`, `pagePath`, `deviceCategory`, `sessions`, `totalUsers`, `eventCount`, …). Dates are `today`, `yesterday`, `7daysAgo`, `28daysAgo` or `YYYY-MM-DD`; without a range the report covers the last seven days.
+- **Row limits are visible.** A report returns 100 rows unless you raise `limit`, and `total_row_count` tells you how many exist.
+- **Realtime for deploys.** `run_realtime_report` shows active users and events right now: the quick way to confirm a new event fires after you ship tracking code.
+- **The event inventory.** `get_tracking_events` lists every event name the property received with its count, over the last 28 days by default.
+- **Fewer sessions than ad clicks is normal.** GA4 only sees visitors who accepted analytics cookies, while Google Ads counts every click. In EU traffic a ratio of two to five clicks per session is common and not a tracking fault. The `tracking` tools (`analyze_campaign_conversions`, `attribution_check`, `landing_page_analysis`) take this into account. Background in [Consent and data gaps](/concepts/consent-and-data).
+
+## Key events
+
+When an event fires but is not counted as a conversion, `draft_key_event` marks it as a key event. The counting method is `ONCE_PER_EVENT` (purchases) or `ONCE_PER_SESSION` (sign-ups). Two things the preview also tells you:
+
+- It applies to future data only; past events are not reclassified.
+- For Google Ads to optimise on it, the property must be linked to the Ads account and the key event imported there as a conversion.
+
+Your Google user needs edit access to the property. The dry run of a key-event plan does not contact Google, so the real apply is the first point where Google checks it.
+
+## Tools
+
+Reads: `get_account_summaries` (accounts and properties you can reach), `run_ga4_report`, `run_realtime_report`, `get_tracking_events`.
+
+Write (previewed): `draft_key_event`.
+
+The full list with parameters is in the [tool reference](/reference/tools#google-analytics-ga4); the toolset slug is `ga4`. The tools that join Analytics with Google Ads or your codebase (`analyze_campaign_conversions`, `attribution_check`, `landing_page_analysis`, `validate_tracking`, `generate_tracking_code`) are in the `tracking` toolset, and the three-way audit across your code, Tag Manager and GA4 (`audit_event_coverage`) is in `gtm`. How they fit together is on [Tracking audit](/integrations/tracking-audit).
+
+## Operations and limits
+
+On AdLoop Cloud, Analytics tools, `draft_key_event` included, are unmetered and do not count toward your daily operations. The `tracking` tools that also read Google Ads do count. See [plans and limits](/cloud/plans-and-limits). Google's own GA4 API quotas apply on every setup.
+
+## What AdLoop stores
+
+On AdLoop Cloud: the encrypted refresh token shared by all Google products, your Google email address, the permissions you granted, and the selected property (ID and name). Report data passes through and is never stored. Self-hosted, the token stays in `~/.adloop/token.json` on your machine. See the [privacy policy](https://getadloop.com/privacy) for the full description.

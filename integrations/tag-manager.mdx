@@ -1,0 +1,59 @@
+---
+title: "Tag Manager"
+description: "Read your GTM container and find out why an event never reaches GA4."
+---
+
+AdLoop reads Google Tag Manager: accounts, containers, tags, triggers, variables, workspaces and the version history. The point is diagnosis. When a conversion goes missing, your AI can see which tag should send it, whether that tag is paused, what its trigger matches, and whether someone edited it without publishing.
+
+Access is **read-only** (`tagmanager.readonly`). AdLoop cannot change, create or publish anything in a container.
+
+## Connect
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    When you connect Google, leave **Tag Manager** ticked under **Access for your AI** ("Read containers — for tracking audits"). Then pick the Tag Manager account and the container, either during onboarding or later under **Settings → Google & accounts → Change**. With a single GTM account, the account step is skipped.
+
+    Choosing a container is optional. Without one, the dashboard shows "Not selected — GTM tools ask per call", and your AI passes the IDs on each call (it finds them with `list_gtm_accounts` and `list_gtm_containers`). Agencies pick a container per client under **Settings → Clients**.
+
+    If the page says **Permission missing — reconnect Google to enable Tag Manager**, your Google connection was made without this permission (deselected, or from an earlier version). Click **Reconnect** and approve it; your other selections stay as they are.
+  </Tab>
+  <Tab title="Self-hosted">
+    1. Enable the **Tag Manager API** in your [Google Cloud project](/self-hosting/google-cloud-project).
+    2. Run `adloop init`. The optional services step discovers your containers and lets you pin one as `gtm.account_id` / `gtm.container_id` in the [config](/self-hosting/configuration). Leave it empty and the tools take `gtm_account_id` / `gtm_container_id` per call.
+
+    Your Google account needs at least **Read** access on the container. A token created before AdLoop added Tag Manager is refreshed with a new consent automatically; see [Adding scopes later](/self-hosting/google-cloud-project#adding-scopes-later).
+  </Tab>
+</Tabs>
+
+## What it reads
+
+- **The live container.** Tags, triggers and the event-coverage audit look at the **published** version, which is what actually runs on your site. Trigger conditions are turned into readable text, such as `{{Page Path}} matches RegExp ^/pricing/`.
+- **Unpublished drafts.** `get_gtm_workspace_diff` lists what was added, changed or deleted in a workspace but never published, plus merge conflicts. This is the usual cause of "I fixed the tag and nothing happened".
+- **History.** `list_gtm_versions` and `get_gtm_version` show who published what and when, so a drop in conversions can be matched to a specific publish.
+- **Variables.** Custom variables plus the enabled built-ins. A trigger that uses `{{Form ID}}` never fires if that built-in isn't enabled.
+
+## The event coverage audit
+
+`audit_event_coverage` compares three sources: the events your website code sends, the GA4 event tags in the live container, and the events GA4 actually receives. Each event gets a status, for example `ok`, `tag_paused`, `tag_active_but_not_firing`, `gtm_paused_but_firing` or `ga4_only`. It is the GTM half of the [tracking audit](/integrations/tracking-audit), which explains the workflow. The audit also needs a GA4 property.
+
+## Tools
+
+- `list_gtm_accounts`, `list_gtm_containers`: find account and container IDs
+- `list_gtm_tags`, `get_gtm_tag`: tag inventory, or the full configuration of one tag
+- `list_gtm_triggers`, `get_gtm_trigger`: trigger inventory with readable conditions, or one trigger with every tag that uses it
+- `list_gtm_variables`: custom and enabled built-in variables
+- `list_gtm_workspaces`, `get_gtm_workspace_diff`: drafts and their unpublished changes
+- `list_gtm_versions`, `get_gtm_version`: publish history and the contents of one version
+- `audit_event_coverage`: code ↔ GTM ↔ GA4 comparison per event
+
+Parameters are in the [tool reference](/reference/tools#tag-manager-gtm); the toolset slug is `gtm` ([toolsets](/concepts/toolsets)).
+
+## Limits
+
+- Dynamic-event tags (an event name taken from `{{Event}}`) and Custom HTML tags can't be interpreted automatically. The audit lists them separately for a manual look.
+- On AdLoop Cloud, Tag Manager calls are unmetered on every plan; see [plans and limits](/cloud/plans-and-limits).
+- On a solo plan or a client-scoped key, calls for a container other than the selected one are refused.
+
+## What AdLoop stores
+
+On AdLoop Cloud: the selected GTM account ID, container ID and container name, next to your encrypted Google token. Container contents pass through and are never stored. Self-hosted: only the IDs you put in `config.yaml`.

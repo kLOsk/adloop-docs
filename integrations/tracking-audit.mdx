@@ -1,0 +1,61 @@
+---
+title: "Tracking audit"
+description: "Compare what your website code sends with what GTM and GA4 actually record."
+---
+
+Most "my campaign doesn't convert" problems are tracking problems: an event that was never deployed, a GTM tag left paused, a trigger that never matches, or a GA4 event that isn't marked as a key event. AdLoop's tracking audit puts your website code, your Tag Manager container, GA4 and Google Ads side by side so your AI can find the break instead of guessing.
+
+There is nothing extra to connect. The audit uses your Google Analytics connection, plus [Tag Manager](/integrations/tag-manager) for the GTM comparison and Google Ads for the cross-checks.
+
+## How the code part works
+
+AdLoop never reads your files, on AdLoop Cloud or self-hosted. Your AI client (Claude Code, Cursor, …) searches your codebase itself for `gtag('event', …)` and `dataLayer.push({event: …})` calls, collects the event names, and passes that list to the tool. So the code comparison needs an AI client with access to the repository; in a chat without your code, your AI can still run the GA4, GTM and Ads checks.
+
+## The workflow
+
+1. **Rule out consent first.** In the EU, Ads usually shows several times more clicks than GA4 shows sessions because many visitors decline analytics cookies. That's normal, not broken tracking; see [consent and data gaps](/concepts/consent-and-data).
+2. **Is anything missing?** `attribution_check` compares the conversions Google Ads reports with what GA4 records, optionally for named events such as `sign_up` or `purchase`, and says whether a gap is explained by consent.
+3. **Code against GA4.** `validate_tracking` takes the event names from your code and returns which ones GA4 receives, which are missing, which arrive without a code reference, and which GA4 collects automatically. It looks at the last 28 days by default.
+4. **Code against GTM against GA4.** `audit_event_coverage` adds the live Tag Manager container and gives every event a status:
+
+   | Status | Meaning |
+   |---|---|
+   | `ok` | Tag active, event arriving in GA4 |
+   | `ok_auto_collected` | GA4 collects it automatically (Enhanced Measurement), no tag needed |
+   | `tag_paused` | The GTM tag exists but is paused |
+   | `tag_active_but_not_firing` | Tag active, but GA4 receives nothing: usually a trigger problem |
+   | `no_tag_no_fire` | In your code, but no tag and no hits |
+   | `ga4_fires_no_tag` | In your code and arriving in GA4, without a GTM tag |
+   | `gtm_only_firing` / `gtm_only_not_firing` | A tag not referenced in your code, with or without hits |
+   | `gtm_paused_but_firing` | Only paused tags, yet GA4 receives the event: it comes from somewhere else (hardcoded gtag, another container, an app) |
+   | `ga4_only` | Arrives in GA4 with no tag and no code reference |
+   | `auto_event_only` | An automatic GA4 event your code doesn't reference |
+
+   Your AI drills into flagged tags and triggers with the [Tag Manager tools](/integrations/tag-manager#tools).
+5. **Fix it.** `generate_tracking_code` writes a ready-to-paste gtag snippet, with Google's recommended parameters for standard events and an optional form-submit, button-click or page-load listener, and checks whether the event already arrives in GA4. If an event arrives but isn't a key event, `draft_key_event` marks it as one, through the usual [preview and confirmation](/concepts/safety-model).
+
+## Paid traffic against GA4
+
+For "what do my ads really achieve?":
+
+- `analyze_campaign_conversions`: Ads clicks and cost per campaign against GA4 sessions and conversions, the real cost per conversion, and the click-to-session ratio as a consent indicator
+- `landing_page_analysis`: paid sessions, conversion rate and engagement per ad landing page, including pages that get clicks but never convert. A slow page is worth a [PageSpeed](/integrations/pagespeed) check.
+
+## Tools
+
+- `attribution_check`, `analyze_campaign_conversions`, `landing_page_analysis`: Google Ads ↔ GA4 cross-checks
+- `validate_tracking`: your code's events ↔ GA4
+- `generate_tracking_code`: gtag snippets
+- `audit_event_coverage`: your code's events ↔ live GTM container ↔ GA4
+
+All of them only read. They sit in the `tracking` toolset, except `audit_event_coverage`, which belongs to `gtm` ([toolsets](/concepts/toolsets)). Parameters are in the [tool reference](/reference/tools).
+
+## Limits
+
+- Tag Manager tags with a dynamic event name (`{{Event}}`) and Custom HTML tags can't be interpreted automatically; the audit lists them for a manual look.
+- The audit compares the **published** container. Unpublished edits show up in `get_gtm_workspace_diff`.
+- On AdLoop Cloud, `analyze_campaign_conversions`, `landing_page_analysis` and `attribution_check` query Google Ads and count as Google Ads operations. The other tracking tools are unmetered. See [plans and limits](/cloud/plans-and-limits).
+
+## What AdLoop stores
+
+Nothing beyond your existing connections. Event names, tag configurations and report data pass through.

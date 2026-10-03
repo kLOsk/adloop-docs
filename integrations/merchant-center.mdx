@@ -1,0 +1,53 @@
+---
+title: "Merchant Center"
+description: "Check feed health before blaming Shopping or Performance Max campaigns."
+---
+
+Disapproved products don't serve, and a Shopping or Performance Max campaign starved by its feed looks like a bidding or budget problem from the Ads side. AdLoop reads Google Merchant Center's product status so your AI can rule the feed in or out first: how many products are approved, pending or disapproved, which issues affect the most products, and which account-level issues block serving altogether.
+
+Google's Merchant API has **no read-only permission**: the only one available (`content`) also allows managing products. AdLoop only reads with it and has no tool that changes products or settings.
+
+## Connect
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    When you connect Google, leave **Merchant Center** ticked under **Access for your AI** ("Read product feed status — for Shopping/PMax"). Then pick the account, during onboarding or later under **Settings → Google & accounts → Change**. Agencies pick an account per client under **Settings → Clients**.
+
+    Google requires a one-time registration before the Merchant API works with an account, and until then it doesn't even list your accounts. If that is the case, the dashboard asks for your Merchant Center ID instead (shown top right in Merchant Center). When you save the account, AdLoop registers itself with it, so Google's few minutes of processing happen before your first question.
+
+    If the page says **Permission missing — reconnect Google to enable Merchant Center**, click **Reconnect** and approve the permission; your other selections stay as they are.
+  </Tab>
+  <Tab title="Self-hosted">
+    1. Enable the **Merchant API** in your [Google Cloud project](/self-hosting/google-cloud-project).
+    2. Call `get_merchant_feed_health` with your Merchant Center ID. On first use AdLoop registers your Google Cloud project with that Merchant Center account, a one-time step the Merchant API requires. Google then needs about five minutes before data flows; the tool says so, and a retry afterwards works.
+
+    Self-hosted AdLoop asks for all Google permissions in one consent, Merchant Center included. Choosing permissions individually is an AdLoop Cloud feature.
+  </Tab>
+</Tabs>
+
+<Note>
+The registration needs a Google user with **Admin** access on the Merchant Center account (Merchant Center → Settings → People and access). If it fails, the tool returns that hint and a link to [Google's manual registration steps](https://developers.google.com/merchant/api/guides/quickstart/registration).
+</Note>
+
+## Behaviour worth knowing
+
+- **Pass the account ID.** `get_merchant_feed_health` always takes the numeric Merchant Center ID, in both editions; your AI gets it from `list_merchant_accounts`.
+- **What comes back:** approved, pending and disapproved counts per reporting context (Shopping ads, free listings, …) and country; the top product issues ranked by affected products, each with Google's documentation link; account-level issues with their severity. `CRITICAL` means offers stop serving entirely.
+- **Product status lags about 30 minutes.** A feed fix you just made won't show yet.
+
+## Tools
+
+- `list_merchant_accounts`: the Merchant Center accounts your Google account can access
+- `get_merchant_feed_health`: product status totals, top issues and account issues for one account
+
+Parameters are in the [tool reference](/reference/tools#merchant-center-merchant); the toolset slug is `merchant` ([toolsets](/concepts/toolsets)).
+
+## Limits
+
+- Aggregates only: AdLoop doesn't list individual products and can't edit products, the feed or account settings.
+- On AdLoop Cloud, Merchant Center calls are unmetered on every plan; see [plans and limits](/cloud/plans-and-limits).
+- On a solo plan or a client-scoped key, calls for an account other than the selected one are refused.
+
+## What AdLoop stores
+
+On AdLoop Cloud: the selected Merchant Center ID and account name, next to your encrypted Google token. Feed data passes through and is never stored.

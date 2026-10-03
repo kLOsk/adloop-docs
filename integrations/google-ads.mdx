@@ -1,0 +1,85 @@
+---
+title: "Google Ads"
+description: "Reports, keyword research and previewed changes for Search campaigns."
+---
+
+AdLoop reads your Google Ads account (campaigns, ads, keywords, search terms, negatives, recommendations, Performance Max and audiences), runs Keyword Planner research, and changes things through the same preview → dry run → `confirm_and_apply` gate as every other write. New campaigns and responsive search ads are created **PAUSED**. AdLoop builds and edits **Search** campaigns; other campaign types can be analysed but not built.
+
+Google Ads shares one Google connection with [Google Analytics](/integrations/google-analytics), Tag Manager, Search Console and Merchant Center.
+
+## Connect
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    The onboarding wizard (later: **Settings → Google & accounts → Connect Google account**) asks which Google products your AI may use and requests only those permissions. Keep **Google Ads** ticked; Google's consent dialog then asks for access to your Ads data. Google offers no read-only permission for Ads, so for "analyse but never change" use a [read-only API key](/concepts/safety-model#read-only-keys).
+
+    Then pick the account. Accounts you reach directly appear in the list; picking a manager account (MCC) opens a second list with the accounts under it, and AdLoop reaches the chosen account through the manager. **I do not use Google Ads** leaves the Ads tools switched off. Agencies connect Google once under **Settings → Google connection** and pick an Ads account per client under **Settings → Clients** (see [Clients](/cloud/clients)).
+
+    **Disconnect Google account** revokes the grant at Google and deletes the stored token. Because all Google products share one grant, Analytics and the others disconnect with it.
+  </Tab>
+  <Tab title="Self-hosted">
+    Since September 2026 there is no developer token and no Manager Account requirement: Google Ads API access belongs to the Google Cloud project that owns your OAuth client. Enable the Google Ads API there and apply for an access level as described in [Google Cloud project setup](/self-hosting/google-cloud-project).
+
+    `adloop init` signs you in, discovers your Ads accounts and stores the default as `ads.customer_id`. Set `ads.login_customer_id` only when you reach accounts through a Manager Account; `list_accounts` then lists the accounts under it. The other Ads tools take a `customer_id` argument to address a different account directly. See the [configuration reference](/self-hosting/configuration).
+  </Tab>
+</Tabs>
+
+## Behaviour worth knowing
+
+- **Money is in account currency.** The read tools compute `metrics.cost`, `metrics.cpa` and average CPC for you. Only `run_gaql` returns Google's raw `cost_micros` (divide by 1,000,000).
+- **Compact mode for audits.** `get_campaign_performance`, `get_keyword_performance`, `get_search_terms` and `get_ad_performance` accept `compact=true`: account totals, the top ten rows and ready-made offender lists (zero-conversion spenders, low quality scores, wasteful search terms, thin ads) instead of every row.
+- **Keyword Planner needs your market.** `discover_keywords` and `estimate_budget` default to Germany and English; pass the `geo_target_id` and `language_id` you actually target.
+- **Performance Max is read-only.** `get_pmax_performance` reports asset groups with their Ad Strength and a network breakdown; most PMax traffic lands in Google's catch-all `MIXED` network, so an exact Search vs YouTube vs Display split is not available.
+- **Recommendations are read, not applied.** `get_recommendations` returns Google's suggestions with estimated impact and flags budget raises that mainly benefit Google; acting on one means drafting the change yourself.
+- **Ads clicks above GA4 sessions** are normal in the EU. See [Consent and data gaps](/concepts/consent-and-data).
+
+## Safety specifics
+
+Everything on [the safety model](/concepts/safety-model) applies. On top of that, for Google Ads:
+
+- **The dry run asks Google.** `confirm_and_apply` with `dry_run=true` sends the exact mutates to Google in validate-only mode: Google checks them and executes nothing. `DRY_RUN_FAILED` carries Google's error and means the real apply would fail the same way. Steps that depend on an object an earlier step would create (keywords for a list that does not exist yet, say) cannot be validated and are counted as skipped.
+- **Budgets and bids are capped.** `max_daily_budget` caps every budget AdLoop sets. `max_bid_increase_pct` (default 100) caps raises of an ad group's manual CPC and of an existing Maximize Clicks ceiling; a first-time ceiling has no baseline and is not capped.
+- **Broad match needs Smart Bidding.** `draft_campaign` refuses BROAD keywords on a campaign without Smart Bidding (Maximize Conversions, Maximize Conversion Value, Target CPA or Target ROAS); `draft_keywords` and `draft_ad_group` flag them in the preview.
+- **Targeting is mandatory.** New campaigns need geo and language targets.
+- **Landing pages must load.** Final URLs of ads and sitelinks are fetched at draft time; an error page blocks the draft. If the site is only rate-limiting or briefly down, the preview warns and lets you proceed.
+- **What is created paused.** Campaigns and responsive search ads are created PAUSED. New ad groups are created enabled but cannot serve until one of their ads is enabled.
+- **Rewriting an ad is not free.** Changing headlines or descriptions with `update_responsive_search_ad` keeps the ad's ID, but Google treats the creative as new: its asset-combination learning and performance history reset and it goes back through policy review. The preview says so. URL and display-path edits do not have this effect.
+- **Location lists replace, exclusions survive.** `update_campaign` replaces the positive geo and language targets with the list you pass. Negative location exclusions are kept and listed in the preview; add them with `add_negative_locations`.
+- **Removal is final.** `remove_entity` cannot be undone; prefer `pause_entity`.
+
+## Tools
+
+Reads: `list_accounts`, `get_campaign_performance`, `get_ad_performance` (full RSA copy), `get_keyword_performance` (quality scores), `get_search_terms`, `get_negative_keywords`, `get_negative_keyword_lists`, `get_negative_keyword_list_keywords`, `get_negative_keyword_list_campaigns`, `get_recommendations`, `get_pmax_performance`, `get_asset_performance` and `get_detailed_asset_performance` (PMax assets and top asset combinations), `get_audience_performance`, `get_demographic_targeting`, `run_gaql` (any Google Ads Query Language query). Planning: `discover_keywords` and `estimate_budget` (Keyword Planner, read-only).
+
+Writes (all previewed):
+
+- **Structure:** `draft_campaign`, `draft_ad_group`, `update_campaign` (bidding, budget, locations, languages, networks, Maximize Clicks CPC ceiling), `update_ad_group` (name, manual CPC bid).
+- **Ads:** `draft_responsive_search_ad`, `update_responsive_search_ad`.
+- **Keywords and exclusions:** `draft_keywords`, `add_negative_keywords`, `add_negative_locations`, `draft_demographic_targeting` (age, gender, parental status, income; exclusions by default).
+- **Shared negative keyword lists:** `propose_negative_keyword_list` (create and attach), `add_to_negative_keyword_list`, `attach_shared_set_to_campaigns`, `detach_shared_set_from_campaigns`.
+- **Campaign assets:** `draft_sitelinks`, `draft_callouts`, `draft_structured_snippets`, `draft_image_assets` (self-hosted only: it reads image files from your disk).
+- **Conversion actions:** `draft_create_conversion_action`, `draft_update_conversion_action`, `draft_remove_conversion_action`.
+- **Status:** `pause_entity`, `enable_entity`, `remove_entity`.
+
+The full list with parameters is in the [tool reference](/reference/tools#google-ads-ads); the toolset slug is `ads`. The tools that join Ads with Analytics (`analyze_campaign_conversions`, `attribution_check`, `landing_page_analysis`) are in the `tracking` toolset, see [Tracking audit](/integrations/tracking-audit).
+
+## Building a campaign
+
+1. **Research.** `discover_keywords` from seed keywords or a URL, then `estimate_budget` for the chosen keywords to see expected clicks and cost.
+2. **`draft_campaign`** creates the budget, the campaign (PAUSED), its first ad group, keywords, and geo and language targeting in one plan. More ad groups follow with `draft_ad_group`.
+3. **`draft_responsive_search_ad`** per ad group: 3 to 15 headlines of up to 30 characters, 2 to 4 descriptions of up to 90, display paths of up to 15. Headlines and descriptions can be pinned to a position, at some cost to Ad Strength.
+4. **Assets:** sitelinks, callouts and structured snippets on the campaign.
+5. **Shared negatives:** a new campaign does not inherit your shared negative keyword lists; attach them with `attach_shared_set_to_campaigns`.
+6. **Enable** the ad, then the campaign, with `enable_entity`.
+
+## Not covered yet
+
+Audiences and remarketing lists, ad schedules and bid adjustments, Performance Max asset groups, Shopping, Demand Gen and video campaigns, experiments, offline conversion uploads, and applying Google's recommendations. Use the Google Ads interface for these; AdLoop can still report on the campaigns.
+
+## Operations and limits
+
+On AdLoop Cloud, every Google Ads tool call counts toward your workspace's daily operations: reads, Keyword Planner lookups, drafts, dry runs and applies, and the `tracking` tools that read Ads. `health_check` and `list_accounts` are not counted. See [plans and limits](/cloud/plans-and-limits). Self-hosted, the only limits are the ones Google sets for your Cloud project's access level.
+
+## What AdLoop stores
+
+On AdLoop Cloud: an encrypted refresh token, your Google email address, the permissions you granted, and the selected Ads account (ID, name, currency, and the manager account it is reached through). Campaign and performance data pass through and are never stored; the change log records what was changed. Self-hosted, the token stays in `~/.adloop/token.json` and the audit log in `~/.adloop/audit.log` on your machine. See the [privacy policy](https://getadloop.com/privacy) for the full description.
