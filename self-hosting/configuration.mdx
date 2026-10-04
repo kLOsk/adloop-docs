@@ -16,6 +16,7 @@ All configuration lives in `~/.adloop/config.yaml`, created by `adloop init`. A 
 | `ads` | `login_customer_id` | — | Your MCC account ID, only with a Manager Account |
 | `gsc` | `site_url` | *(empty)* | Search Console property (`https://example.com/` or `sc-domain:example.com`); empty = pass per call |
 | `gtm` | `account_id` / `container_id` | *(empty)* | Default GTM account/container; empty = pass per call |
+| `merchant` | `account_id` | *(empty)* | Default Merchant Center account for `get_merchant_feed_health`; empty = pass per call |
 | `pagespeed` | `api_key` | *(empty)* | Optional API key for `analyze_page_speed` (keyless works at low rates) |
 | `reddit` | `client_id` / `client_secret` | *(empty)* | Your Reddit developer app (Business Manager → Developer Application); see [Reddit Ads](/integrations/reddit-ads) |
 | `reddit` | `ad_account_id` | *(empty)* | Default Reddit ad account for every Reddit tool (picked by the wizard) |

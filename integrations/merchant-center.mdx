@@ -31,7 +31,7 @@ The registration needs a Google user with **Admin** access on the Merchant Cente
 
 ## Behaviour worth knowing
 
-- **Pass the account ID.** `get_merchant_feed_health` always takes the numeric Merchant Center ID, in both editions; your AI gets it from `list_merchant_accounts`.
+- **Which account is checked.** On AdLoop Cloud, `get_merchant_feed_health` uses the Merchant Center account selected for the workspace or the client, so your AI doesn't need the ID. Self-hosted, set `merchant.account_id` in the [configuration](/self-hosting/configuration) to get the same default. An `account_id` passed in the call always wins; your AI finds the IDs with `list_merchant_accounts`.
 - **What comes back:** approved, pending and disapproved counts per reporting context (Shopping ads, free listings, …) and country; the top product issues ranked by affected products, each with Google's documentation link; account-level issues with their severity. `CRITICAL` means offers stop serving entirely.
 - **Product status lags about 30 minutes.** A feed fix you just made won't show yet.
 
