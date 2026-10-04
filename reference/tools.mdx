@@ -29,6 +29,7 @@ Google Ads reads, writes, and planning.
 | `add_negative_locations` | Write | Draft negative geo location additions — returns a PREVIEW. |
 | `add_to_negative_keyword_list` | Write | Append keywords to an EXISTING shared negative keyword list — returns a PREVIEW. |
 | `attach_shared_set_to_campaigns` | Write | Attach an existing shared set to one or more campaigns — returns a PREVIEW. |
+| `check_brand_names` | Read | Check a list of brand names against Google's brand knowledge graph. |
 | `detach_shared_set_from_campaigns` | Write | Detach a shared set from one or more campaigns — returns a PREVIEW. |
 | `discover_keywords` | Read | Discover new keyword ideas using Google Ads Keyword Planner. |
 | `draft_ad_group` | Write | Draft a new ad group within an existing campaign — returns a PREVIEW, does NOT create. |
@@ -64,6 +65,7 @@ Google Ads reads, writes, and planning.
 | `propose_negative_keyword_list` | Write | Draft a shared negative keyword list and attach it to a campaign — returns a PREVIEW. |
 | `remove_entity` | Destructive | Draft REMOVING an entity — returns a PREVIEW. This is IRREVERSIBLE. |
 | `run_gaql` | Read | Execute an arbitrary GAQL (Google Ads Query Language) query. |
+| `suggest_brands` | Read | Resolve a brand name to the brands Google recognizes for it. |
 | `update_ad_group` | Write | Draft an ad group update for name and/or manual CPC bid. |
 | `update_campaign` | Write | Draft an update to an existing campaign — returns a PREVIEW, does NOT apply. |
 | `update_responsive_search_ad` | Write | Update mutable fields on an existing RSA in place — returns a PREVIEW. |

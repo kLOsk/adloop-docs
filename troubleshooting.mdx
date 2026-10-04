@@ -5,7 +5,7 @@ description: "The errors you'll actually meet, and their fixes."
 
 ## First move: the health check
 
-Ask your AI to run `health_check`. It tests the OAuth token, GA4, and Ads connectivity and returns actionable guidance per service.
+Ask your AI to run `health_check`. It tests the OAuth token, GA4, and Ads connectivity and returns actionable guidance per service. GA4 is checked on two surfaces: `ga4_admin` (listing properties) and `ga4_data` (every report). `ga4_data: "error"` with `SERVICE_DISABLED` means the Google Analytics Data API isn't enabled in your Google Cloud project (self-hosted); enable it there. It isn't a permissions problem.
 
 ## "This app isn't verified" (self-hosted)
 
