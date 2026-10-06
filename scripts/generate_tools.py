@@ -37,11 +37,20 @@ Tools are grouped by [toolset](/concepts/toolsets). Type: **Read** tools never c
 """
 
 
+def _hint(ann, snake: str, camel: str) -> bool:
+    """MCP SDK 2 renamed the annotation fields; read whichever exists."""
+    if ann is None:
+        return False
+    if hasattr(type(ann), "model_fields") and snake in type(ann).model_fields:
+        return bool(getattr(ann, snake))
+    return bool(getattr(ann, camel, False))
+
+
 def tool_type(tool) -> str:
     ann = getattr(tool, "annotations", None)
-    if ann is not None and getattr(ann, "destructiveHint", False):
+    if _hint(ann, "destructive_hint", "destructiveHint"):
         return "Destructive"
-    if ann is not None and getattr(ann, "readOnlyHint", False):
+    if _hint(ann, "read_only_hint", "readOnlyHint"):
         return "Read"
     return "Write"
 
