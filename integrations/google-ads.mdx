@@ -57,7 +57,7 @@ Writes (all previewed):
 - **Ads:** `draft_responsive_search_ad`, `update_responsive_search_ad`.
 - **Keywords and exclusions:** `draft_keywords`, `add_negative_keywords`, `add_negative_locations`, `draft_demographic_targeting` (age, gender, parental status, income; exclusions by default).
 - **Shared negative keyword lists:** `propose_negative_keyword_list` (create and attach), `add_to_negative_keyword_list`, `attach_shared_set_to_campaigns`, `detach_shared_set_from_campaigns`.
-- **Campaign assets:** `draft_sitelinks`, `draft_callouts`, `draft_structured_snippets`, `draft_image_assets` (self-hosted only: it reads image files from your disk).
+- **Campaign assets:** `draft_sitelinks`, `draft_callouts`, `draft_structured_snippets`, `draft_image_assets` (from public image URLs everywhere, or local files when self-hosted; the image is fetched only from public addresses, and if it changes between preview and apply, the apply is refused).
 - **Conversion actions:** `draft_create_conversion_action`, `draft_update_conversion_action`, `draft_remove_conversion_action`.
 - **Status:** `pause_entity`, `enable_entity`, `remove_entity`.
 
