@@ -53,6 +53,8 @@ Google Ads reads, writes, and planning.
 | `draft_structured_snippets` | Write | Draft campaign structured snippet assets — returns a PREVIEW. |
 | `draft_update_conversion_action` | Write | Draft a partial UPDATE of an existing ConversionAction — returns PREVIEW. |
 | `draft_update_custom_conversion_goal` | Write | Rename and/or re-scope an existing custom conversion goal — PREVIEW. |
+| `draft_upload_call_conversions` | Write | Draft an offline CALL-conversion upload from a CSV — returns a PREVIEW. |
+| `draft_upload_enhanced_conversions_for_leads` | Write | Draft an Enhanced Conversions for LEADS upload from a CSV — PREVIEW. |
 | `enable_entity` | Write | Draft enabling a paused campaign, ad group, ad, or keyword — returns a PREVIEW. |
 | `estimate_budget` | Read | Forecast clicks, cost, and conversions for a set of keywords. |
 | `get_ad_performance` | Read | Get ad-level performance data including headlines, descriptions, and metrics. |
@@ -82,7 +84,7 @@ Google Ads reads, writes, and planning.
 | `remove_from_brand_list` | Destructive | Remove brands from a brand list — returns a PREVIEW. |
 | `run_gaql` | Read | Execute an arbitrary GAQL (Google Ads Query Language) query. |
 | `suggest_brands` | Read | Resolve a brand name to the brands Google recognizes for it. |
-| `update_ad_group` | Write | Draft an ad group update for name and/or manual CPC bid. |
+| `update_ad_group` | Write | Draft an ad group update for name and/or manual CPC bid — returns a PREVIEW. |
 | `update_campaign` | Write | Draft an update to an existing campaign — returns a PREVIEW, does NOT apply. |
 | `update_responsive_search_ad` | Write | Update mutable fields on an existing RSA in place — returns a PREVIEW. |
 
@@ -115,11 +117,15 @@ Cross-channel attribution and tracking code.
 
 ## Tag Manager (`gtm`)
 
-Google Tag Manager reads.
+Google Tag Manager reads and (opt-in) writes.
 
 | Tool | Type | What it does |
 |------|------|--------------|
 | `audit_event_coverage` | Read | Three-way audit: codebase events ↔ GTM tags ↔ GA4 actual fires. |
+| `draft_delete_gtm_entity` | Destructive | Draft deleting a Tag Manager tag or trigger — returns a PREVIEW. |
+| `draft_gtm_tag` | Write | Draft creating or updating a Tag Manager tag — returns a PREVIEW. |
+| `draft_gtm_trigger` | Write | Draft creating or updating a Tag Manager trigger — returns a PREVIEW. |
+| `draft_publish_gtm_workspace` | Destructive | Draft publishing a Tag Manager workspace LIVE — returns a PREVIEW. |
 | `get_gtm_tag` | Read | Get the full RAW configuration for a single GTM tag. |
 | `get_gtm_trigger` | Read | Get the full RAW configuration for a single GTM trigger. |
 | `get_gtm_version` | Read | Get full metadata + entity counts for a single GTM container version. |
