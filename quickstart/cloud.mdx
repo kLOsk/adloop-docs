@@ -9,10 +9,10 @@ AdLoop Cloud hosts everything for you: Google API access, OAuth, credential encr
   <Step title="Create your account">
     Register at [getadloop.com](https://getadloop.com/register). The free plan covers one Ads account and one GA4 property and needs no credit card. [Pricing](https://getadloop.com/pricing) if you need more, and [plans and limits](/cloud/plans-and-limits) for what each plan includes.
   </Step>
-  <Step title="Connect Google">
+  <Step title="Connect your ad platforms">
     The onboarding wizard asks you to connect your Google account and pick which accounts your AI may see: an Ads account, a GA4 property, and optionally a Tag Manager container, Search Console property, or Merchant Center account.
 
-    [Reddit Ads](/integrations/reddit-ads) is connected separately afterwards under **Settings → Reddit Ads**.
+    Advertising on Reddit only? Choose **Connect Reddit Ads instead** in the wizard. [Reddit Ads](/integrations/reddit-ads) can also be added next to Google at any time under **Settings → Reddit Ads**.
 
     <Note>
     AdLoop Cloud is verified by Google, so you see Google's normal consent dialog with no warning screen. You pick there which services to grant, AdLoop never sees your password, and you can revoke access in your Google account at any time.
@@ -31,4 +31,4 @@ AdLoop Cloud hosts everything for you: Google API access, OAuth, credential encr
 
 ## The order matters
 
-Google setup comes before API keys, and API keys before connecting your AI. A key created before Google is connected would only ever return setup errors, so the dashboard enforces the sequence.
+Connecting an ad platform (Google or Reddit) comes before API keys, and API keys before connecting your AI. A key created before any account is selected would only ever return setup errors, so the dashboard enforces the sequence.

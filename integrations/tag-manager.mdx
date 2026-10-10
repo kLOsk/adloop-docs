@@ -5,7 +5,7 @@ description: "Read your GTM container and find out why an event never reaches GA
 
 AdLoop reads Google Tag Manager: accounts, containers, tags, triggers, variables, workspaces and the version history. The point is diagnosis. When a conversion goes missing, your AI can see which tag should send it, whether that tag is paused, what its trigger matches, and whether someone edited it without publishing.
 
-Access is **read-only** (`tagmanager.readonly`). AdLoop cannot change, create or publish anything in a container.
+On AdLoop Cloud, access is **read-only** (`tagmanager.readonly`): AdLoop can't change, create or publish anything in a container. The self-hosted edition can also make changes, as an opt-in; see [Changes](#changes-self-hosted-opt-in).
 
 ## Connect
 
@@ -29,7 +29,7 @@ Access is **read-only** (`tagmanager.readonly`). AdLoop cannot change, create or
 
 - **The live container.** Tags, triggers and the event-coverage audit look at the **published** version, which is what actually runs on your site. Trigger conditions are turned into readable text, such as `{{Page Path}} matches RegExp ^/pricing/`.
 - **Unpublished drafts.** `get_gtm_workspace_diff` lists what was added, changed or deleted in a workspace but never published, plus merge conflicts. This is the usual cause of "I fixed the tag and nothing happened".
-- **History.** `list_gtm_versions` and `get_gtm_version` show who published what and when, so a drop in conversions can be matched to a specific publish.
+- **History.** `list_gtm_versions` and `get_gtm_version` list the published versions in order, with their names, notes and contents, so a drop in conversions can be matched to a specific publish. Google's API doesn't say who published a version or when; the version history in GTM itself shows that.
 - **Variables.** Custom variables plus the enabled built-ins. A trigger that uses `{{Form ID}}` never fires if that built-in isn't enabled.
 
 ## The event coverage audit
@@ -47,6 +47,14 @@ Access is **read-only** (`tagmanager.readonly`). AdLoop cannot change, create or
 - `audit_event_coverage`: code ↔ GTM ↔ GA4 comparison per event
 
 Parameters are in the [tool reference](/reference/tools#tag-manager-gtm); the toolset slug is `gtm` ([toolsets](/concepts/toolsets)).
+
+## Changes (self-hosted, opt-in)
+
+The self-hosted edition can create and update tags and triggers, delete them, and publish a workspace: `draft_gtm_tag`, `draft_gtm_trigger`, `draft_delete_gtm_entity` and `draft_publish_gtm_workspace`. It's off until you set `gtm.write_enabled: true` in the [config](/self-hosting/configuration). Turning it on asks for a new Google consent with the Tag Manager edit and publish permissions, and your Google account needs Edit (and Publish) rights on the container.
+
+- Tag and trigger drafts only change a **workspace**. Nothing reaches your site until a publish is applied, and the publish preview lists every pending change in the workspace, including other people's edits.
+- **Custom HTML** tags are refused unless `gtm.allow_custom_html: true` is set as well.
+- Every change goes through the [preview and confirm flow](/concepts/safety-model). A publish returns the version it replaced, which is your way back.
 
 ## Limits
 
