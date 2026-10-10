@@ -64,6 +64,7 @@ Google Ads reads, writes, and planning.
 | `get_brand_list_campaigns` | Read | List which campaigns a brand list is attached to. |
 | `get_brand_lists` | Read | List all brand lists (SharedSets of type BRANDS) in the account. |
 | `get_campaign_performance` | Read | Get campaign-level performance metrics for a date range. |
+| `get_change_history` | Read | List recent account changes: who changed what, when, and through which tool. |
 | `get_custom_conversion_goals` | Read | Read the custom conversion goals and the campaign goal configuration. |
 | `get_demographic_targeting` | Read | List demographic targeting criteria (age, gender, parental status, income). |
 | `get_detailed_asset_performance` | Read | Get top-performing asset combinations for Performance Max campaigns. |
@@ -95,10 +96,13 @@ Google Analytics reads and key events.
 
 | Tool | Type | What it does |
 |------|------|--------------|
+| `draft_delete_key_event` | Destructive | Draft removing a GA4 key event so the event no longer counts as a conversion, returning a PREVIEW. |
 | `draft_key_event` | Write | Draft marking a GA4 event as a key event (conversion) — returns a PREVIEW. |
 | `get_account_summaries` | Read | List all GA4 accounts and properties accessible by the authenticated user. |
 | `get_tracking_events` | Read | List all GA4 events and their volume for the given date range. |
-| `run_ga4_report` | Read | Run a custom GA4 report with specified dimensions, metrics, and date range. |
+| `list_ga4_dimensions_and_metrics` | Read | List the dimensions and metrics a GA4 property can report on, including custom ones. |
+| `list_key_events` | Read | List the key events (conversions) configured on a GA4 property. |
+| `run_ga4_report` | Read | Run a custom GA4 report with optional filters, ordering, paging and a comparison period. |
 | `run_realtime_report` | Read | Run a GA4 realtime report showing current active users and events. |
 
 
@@ -126,16 +130,18 @@ Google Tag Manager reads and (opt-in) writes.
 | `draft_gtm_tag` | Write | Draft creating or updating a Tag Manager tag — returns a PREVIEW. |
 | `draft_gtm_trigger` | Write | Draft creating or updating a Tag Manager trigger — returns a PREVIEW. |
 | `draft_publish_gtm_workspace` | Destructive | Draft publishing a Tag Manager workspace LIVE — returns a PREVIEW. |
+| `draft_rollback_gtm_version` | Destructive | Draft republishing an older Tag Manager version LIVE; returns a PREVIEW. |
 | `get_gtm_tag` | Read | Get the full RAW configuration for a single GTM tag. |
 | `get_gtm_trigger` | Read | Get the full RAW configuration for a single GTM trigger. |
-| `get_gtm_version` | Read | Get full metadata + entity counts for a single GTM container version. |
+| `get_gtm_version` | Read | Get metadata + entity counts for a single GTM container version. |
+| `get_gtm_version_diff` | Read | Compare two GTM container versions: what a publish changed. |
 | `get_gtm_workspace_diff` | Read | Show drafted-but-not-published changes in a GTM workspace. |
 | `list_gtm_accounts` | Read | List all GTM accounts the AdLoop service account / OAuth user can read. |
 | `list_gtm_containers` | Read | List all containers under a GTM account. |
-| `list_gtm_tags` | Read | List every tag in the LIVE GTM container. |
-| `list_gtm_triggers` | Read | List every trigger in the LIVE GTM container. |
+| `list_gtm_tags` | Read | List every tag in the LIVE GTM container, or in one workspace. |
+| `list_gtm_triggers` | Read | List every trigger in the LIVE GTM container, or in one workspace. |
 | `list_gtm_variables` | Read | List GTM variables — both custom and enabled built-in. |
-| `list_gtm_versions` | Read | List published GTM version history (newest first). |
+| `list_gtm_versions` | Read | List GTM container version headers (newest first). |
 | `list_gtm_workspaces` | Read | List workspaces (drafts) under a GTM container. |
 
 

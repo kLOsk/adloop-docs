@@ -30,7 +30,7 @@ No Google account is involved: PageSpeed Insights fetches the page itself, so th
 
 - **Mobile by default**, because that's where most paid traffic lands; pass `strategy="desktop"` for the other view.
 - **A run takes 10 to 30 seconds.** That's Lighthouse loading the page, not a hang.
-- **Field data beats lab data.** Lab numbers come from a simulated load. When the two disagree, trust the real-user numbers. No field data means the page has too little Chrome traffic, not that it's fast.
+- **Field data beats lab data.** Lab numbers come from a simulated load. When the two disagree, trust the real-user numbers. No field data means the page has too little Chrome traffic, not that it's fast. In that case AdLoop falls back to the field data for the whole site (origin) and says so, which is a useful signal for low-traffic landing pages.
 - **Public pages only.** Google fetches the URL from its own servers, so localhost, staging behind a login or pages blocked by a firewall can't be measured.
 - It pairs with [`landing_page_analysis`](/integrations/tracking-audit#tools): a page with paid traffic, no conversions and a poor score needs speed work before new ad copy.
 

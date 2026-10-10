@@ -36,7 +36,7 @@ Access is **read-only** (`webmasters.readonly`).
 ## Tools
 
 - `list_gsc_sites`: the properties your Google account can access, with your permission level
-- `run_gsc_report`: a search analytics report for one property
+- `run_gsc_report`: a search analytics report for one property. By default it returns final data, about two days behind; `data_state: "all"` includes the fresh, still-changing days. Large reports page with `start_row` past Google's limit of 25,000 rows per request.
 
 Parameters are in the [tool reference](/reference/tools#search-console-gsc); the toolset slug is `gsc` ([toolsets](/concepts/toolsets)).
 

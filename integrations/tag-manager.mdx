@@ -39,18 +39,19 @@ On AdLoop Cloud, access is **read-only** (`tagmanager.readonly`): AdLoop can't c
 ## Tools
 
 - `list_gtm_accounts`, `list_gtm_containers`: find account and container IDs
-- `list_gtm_tags`, `get_gtm_tag`: tag inventory, or the full configuration of one tag
+- `list_gtm_tags`, `get_gtm_tag`: tag inventory, or the full configuration of one tag. With `workspace_id`, the tag and trigger tools read a workspace's unpublished state instead of the live container
 - `list_gtm_triggers`, `get_gtm_trigger`: trigger inventory with readable conditions, or one trigger with every tag that uses it
 - `list_gtm_variables`: custom and enabled built-in variables
 - `list_gtm_workspaces`, `get_gtm_workspace_diff`: drafts and their unpublished changes
 - `list_gtm_versions`, `get_gtm_version`: publish history and the contents of one version
+- `get_gtm_version_diff`: what changed between two versions (by default, the latest version against the one before it): tags, triggers and variables added, removed or changed
 - `audit_event_coverage`: code ↔ GTM ↔ GA4 comparison per event
 
 Parameters are in the [tool reference](/reference/tools#tag-manager-gtm); the toolset slug is `gtm` ([toolsets](/concepts/toolsets)).
 
 ## Changes (self-hosted, opt-in)
 
-The self-hosted edition can create and update tags and triggers, delete them, and publish a workspace: `draft_gtm_tag`, `draft_gtm_trigger`, `draft_delete_gtm_entity` and `draft_publish_gtm_workspace`. It's off until you set `gtm.write_enabled: true` in the [config](/self-hosting/configuration). Turning it on asks for a new Google consent with the Tag Manager edit and publish permissions, and your Google account needs Edit (and Publish) rights on the container.
+The self-hosted edition can create and update tags and triggers, delete them, publish a workspace, and roll the container back to an earlier version: `draft_gtm_tag`, `draft_gtm_trigger`, `draft_delete_gtm_entity`, `draft_publish_gtm_workspace` and `draft_rollback_gtm_version`. It's off until you set `gtm.write_enabled: true` in the [config](/self-hosting/configuration). Turning it on asks for a new Google consent with the Tag Manager edit and publish permissions, and your Google account needs Edit (and Publish) rights on the container.
 
 - Tag and trigger drafts only change a **workspace**. Nothing reaches your site until a publish is applied, and the publish preview lists every pending change in the workspace, including other people's edits.
 - **Custom HTML** tags are refused unless `gtm.allow_custom_html: true` is set as well.

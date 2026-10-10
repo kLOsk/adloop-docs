@@ -43,9 +43,9 @@ Your Google user needs edit access to the property. The dry run of a key-event p
 
 ## Tools
 
-Reads: `get_account_summaries` (accounts and properties you can reach), `run_ga4_report`, `run_realtime_report`, `get_tracking_events`.
+Reads: `get_account_summaries` (accounts and properties you can reach), `run_ga4_report` (with filters, ordering, paging and a comparison period), `run_realtime_report`, `get_tracking_events`, `list_key_events` (which events count as key events), `list_ga4_dimensions_and_metrics` (every field the property offers, custom ones included).
 
-Write (previewed): `draft_key_event`.
+Writes (previewed): `draft_key_event` (mark an event as a key event), `draft_delete_key_event` (stop counting it; the event keeps firing).
 
 The full list with parameters is in the [tool reference](/reference/tools#google-analytics-ga4); the toolset slug is `ga4`. The tools that join Analytics with Google Ads or your codebase (`analyze_campaign_conversions`, `attribution_check`, `landing_page_analysis`, `validate_tracking`, `generate_tracking_code`) are in the `tracking` toolset, and the three-way audit across your code, Tag Manager and GA4 (`audit_event_coverage`) is in `gtm`. How they fit together is on [Tracking audit](/integrations/tracking-audit).
 
