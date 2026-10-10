@@ -1,0 +1,60 @@
+---
+title: "Connect OpenAI Codex"
+description: "Add AdLoop Cloud to the Codex CLI, IDE extension and desktop app."
+---
+
+<Info>
+The Codex CLI, the IDE extension and the desktop app share one configuration, `~/.codex/config.toml`, so setting AdLoop up once covers all three (checked 2026-10-10). Codex in ChatGPT on the web doesn't read that file; it uses plugins instead, see [ChatGPT](/connect/chatgpt).
+</Info>
+
+## Sign in with AdLoop (OAuth)
+
+```bash
+codex mcp add adloop --url https://mcp.getadloop.com/mcp
+```
+
+Codex detects that AdLoop supports OAuth and starts the sign-in straight away: your browser opens AdLoop's consent page, you choose **Allow access**, and the browser hands the token back to Codex. If it expires or you want to switch workspaces later:
+
+```bash
+codex mcp login adloop
+```
+
+## API key
+
+Keep the key in an environment variable rather than in the config file:
+
+```bash
+export ADLOOP_API_KEY=alc_YOUR_KEY
+codex mcp add adloop --url https://mcp.getadloop.com/mcp --bearer-token-env-var ADLOOP_API_KEY
+```
+
+That writes this to `~/.codex/config.toml`, which you can also edit by hand:
+
+```toml
+[mcp_servers.adloop]
+url = "https://mcp.getadloop.com/mcp"
+bearer_token_env_var = "ADLOOP_API_KEY"
+```
+
+Codex sends the variable's value as `Authorization: Bearer …`. A key can be [restricted](/cloud/api-keys) to read-only, single clients or chosen toolsets.
+
+## IDE extension
+
+In the Codex panel: gear menu → **MCP servers** → **Add server**, choose **Streamable HTTP**, enter `https://mcp.getadloop.com/mcp`, save and **restart the extension**. Click **Authenticate** next to AdLoop to sign in. A server you added with the CLI shows up here too.
+
+## Verify
+
+```bash
+codex mcp list
+```
+
+Or type `/mcp` in a Codex session. Then ask: *"Run the AdLoop health check."*
+
+## Notes
+
+- AdLoop answers some reports in more than ten seconds. If Codex gives up on long calls, raise `tool_timeout_sec` under `[mcp_servers.adloop]` (default 60).
+- Every write goes through the [preview and confirm flow](/concepts/safety-model), so an agent running unattended can't apply a change without you.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

@@ -1,0 +1,68 @@
+---
+title: "Connect VS Code (GitHub Copilot)"
+description: "Use AdLoop Cloud in GitHub Copilot's agent mode."
+---
+
+<Info>
+VS Code runs MCP servers in Copilot's **agent mode**. If your GitHub organization manages Copilot, an admin may have to allow MCP servers first (checked 2026-10-10).
+</Info>
+
+## Add the server
+
+Run **MCP: Add Server** from the Command Palette (`⇧⌘P` / `Ctrl+Shift+P`), choose **HTTP**, enter `https://mcp.getadloop.com/mcp`, name it `adloop` and pick where to save it. Or write the config yourself in `.vscode/mcp.json` (one project) or your user `mcp.json` (**MCP: Open User Configuration**, all projects). Newer VS Code versions also offer a shared `.mcp.json`; the format below works in the VS Code files and supports the secure key prompt:
+
+<Tabs>
+  <Tab title="Sign in with AdLoop (OAuth)">
+    ```json
+    {
+      "servers": {
+        "adloop": {
+          "type": "http",
+          "url": "https://mcp.getadloop.com/mcp"
+        }
+      }
+    }
+    ```
+
+    On first use VS Code opens AdLoop's consent page in your browser; choose **Allow access**. The account then appears in VS Code's **Accounts** menu.
+  </Tab>
+  <Tab title="API key">
+    VS Code asks for the key once and stores it securely, so it never sits in the file:
+
+    ```json
+    {
+      "inputs": [
+        {
+          "type": "promptString",
+          "id": "adloop-key",
+          "description": "AdLoop API key",
+          "password": true
+        }
+      ],
+      "servers": {
+        "adloop": {
+          "type": "http",
+          "url": "https://mcp.getadloop.com/mcp",
+          "headers": { "Authorization": "Bearer ${input:adloop-key}" }
+        }
+      }
+    }
+    ```
+
+    Create the key under **Settings → API keys** in the [dashboard](https://getadloop.com).
+  </Tab>
+</Tabs>
+
+## Verify
+
+Open Copilot Chat, switch to **Agent**, and check that AdLoop appears under **Configure Tools**. **MCP: List Servers** shows its status and output. Then ask: *"Run the AdLoop health check."*
+
+## Notes
+
+- Copilot sends at most 128 tools per request across all servers. If you run several servers, deselect what you don't need under **Configure Tools**, or use an AdLoop key limited to a few [toolsets](/concepts/toolsets).
+- To sign in to a different workspace, run **Authentication: Remove Dynamic Authentication Providers**, then start the server again.
+- VS Code shows a trust prompt the first time a server starts and after its config changes.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

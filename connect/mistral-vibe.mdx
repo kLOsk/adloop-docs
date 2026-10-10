@@ -1,0 +1,39 @@
+---
+title: "Connect Mistral Vibe (Le Chat)"
+description: "Add AdLoop Cloud to Mistral Vibe, formerly Le Chat, as a custom MCP connector."
+---
+
+<Info>
+Le Chat is now called **Vibe**, at the same address, chat.mistral.ai (checked 2026-10-10). Custom MCP connectors work on every plan, including Free. On Team and Enterprise plans an admin adds them for the organization.
+</Info>
+
+<Steps>
+  <Step title="Open Connectors">
+    In the sidebar click **Connectors**, then **+ Add Connector** and the **Custom MCP Connector** tab.
+  </Step>
+  <Step title="Describe the server">
+    Connector name: `AdLoop` (no spaces or special characters). Server URL:
+
+    ```
+    https://mcp.getadloop.com/mcp
+    ```
+
+    Click **Connect**. Vibe detects that AdLoop uses OAuth and registers itself.
+  </Step>
+  <Step title="Authorize">
+    AdLoop's consent page opens. Sign in to your workspace and choose **Allow access**.
+  </Step>
+  <Step title="Use it in a chat">
+    Click **+** (or type `/`) → **Tools** and turn AdLoop on. Then ask: *"Run the AdLoop health check."*
+  </Step>
+</Steps>
+
+## Notes
+
+- Under **Connectors → My Connectors → AdLoop → Functions** you can set individual read tools to *Always allow*. Leave writes on ask: AdLoop shows a [preview](/concepts/safety-model) before anything changes, and you approve it in the chat.
+- If you want your AI provider in Europe as well: Mistral is based in France, and AdLoop's MCP server runs in Germany. See [Security and privacy](https://getadloop.com/security) for where AdLoop processes data.
+- Agencies: the OAuth connection covers the whole workspace, so name the client in your request ("for Kersten Coating, how did last week go?").
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

@@ -1,0 +1,39 @@
+---
+title: "Connect Perplexity"
+description: "Add AdLoop Cloud to Perplexity as a custom remote connector."
+---
+
+<Info>
+Custom connectors need a **Pro, Max or Enterprise** plan. On Enterprise, an admin first turns on *Allow members to add custom connectors* under Enterprise settings → Connectors; it's off by default (checked 2026-10-10).
+</Info>
+
+<Steps>
+  <Step title="Add a custom connector">
+    In Perplexity: **Account settings → Connectors → + Custom connector** and choose **Remote**.
+  </Step>
+  <Step title="Describe the server">
+    Name: `AdLoop`. MCP Server URL:
+
+    ```
+    https://mcp.getadloop.com/mcp
+    ```
+
+    Authentication: **OAuth**. Transport: **Streamable HTTP**. Leave client ID and secret empty; Perplexity registers itself with AdLoop. Tick the acknowledgement and click **Add**.
+  </Step>
+  <Step title="Authorize">
+    Click the AdLoop card to sign in. AdLoop's consent page opens; sign in to your workspace and choose **Allow access**.
+  </Step>
+  <Step title="Use it">
+    In the composer, turn AdLoop on in the connector picker (or type `@`), and make sure the search focus isn't set to web only. Then ask: *"Run the AdLoop health check."*
+  </Step>
+</Steps>
+
+## Notes
+
+- Perplexity only reloads a connector's tool list when you remove and add the connector again. Do that after AdLoop gains new tools, for example a new [integration](/integrations/reddit-ads).
+- Enterprise admins can share the connector with the whole organization and choose whether members sign in individually.
+- Every write goes through the [preview and confirm flow](/concepts/safety-model): Perplexity can draft a change, but nothing is applied until you confirm it.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

@@ -25,10 +25,19 @@
       {
         "group": "Connect your AI",
         "pages": [
+          "connect/overview",
           "connect/claude-ai",
+          "connect/chatgpt",
+          "connect/mistral-vibe",
+          "connect/perplexity",
+          "connect/gemini",
           "connect/claude-code",
           "connect/cursor",
-          "connect/chatgpt"
+          "connect/codex",
+          "connect/vscode",
+          "connect/devin-desktop",
+          "connect/zed",
+          "connect/more-clients"
         ]
       },
       {

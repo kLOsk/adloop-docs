@@ -1,0 +1,78 @@
+---
+title: "Connect your AI"
+description: "AdLoop Cloud works with any AI app that speaks MCP. Pick yours."
+---
+
+AdLoop Cloud is a remote MCP server at:
+
+```
+https://mcp.getadloop.com/mcp
+```
+
+Any AI app that can add a remote MCP server can use it. There are two ways to sign in:
+
+- **Sign in with AdLoop (OAuth).** The app opens AdLoop's consent page, you approve, done. Nothing to copy. The connection uses your whole workspace.
+- **API key.** You paste a key from **Settings → API keys** in the [dashboard](https://getadloop.com) into the app's config, sent as `Authorization: Bearer alc_…`. Keys can be [restricted](/cloud/api-keys): read-only, single clients, chosen toolsets.
+
+Every write goes through the same [preview and confirm flow](/concepts/safety-model), whichever app you use.
+
+## Chat apps
+
+<CardGroup cols={2}>
+  <Card title="claude.ai" icon="message" href="/connect/claude-ai">
+    Custom connector, also in Claude Desktop and mobile. OAuth.
+  </Card>
+  <Card title="ChatGPT" icon="message" href="/connect/chatgpt">
+    Custom plugin in developer mode, paid plans. OAuth.
+  </Card>
+  <Card title="Mistral Vibe (Le Chat)" icon="message" href="/connect/mistral-vibe">
+    Custom MCP connector, free plan included. OAuth.
+  </Card>
+  <Card title="Perplexity" icon="message" href="/connect/perplexity">
+    Custom remote connector on Pro, Max and Enterprise. OAuth.
+  </Card>
+  <Card title="Gemini" icon="message" href="/connect/gemini">
+    Gemini app custom apps (US), Antigravity and Gemini CLI.
+  </Card>
+</CardGroup>
+
+## Coding agents and editors
+
+<CardGroup cols={2}>
+  <Card title="Claude Code" icon="terminal" href="/connect/claude-code">
+    One command, API key or OAuth.
+  </Card>
+  <Card title="Cursor" icon="code" href="/connect/cursor">
+    `mcp.json`, API key or OAuth.
+  </Card>
+  <Card title="OpenAI Codex" icon="terminal" href="/connect/codex">
+    CLI, IDE extension and desktop app share one config.
+  </Card>
+  <Card title="VS Code (GitHub Copilot)" icon="code" href="/connect/vscode">
+    Agent mode, `mcp.json`, API key or OAuth.
+  </Card>
+  <Card title="Devin Desktop (Windsurf)" icon="code" href="/connect/devin-desktop">
+    Devin Local and the legacy Cascade agent.
+  </Card>
+  <Card title="Zed" icon="code" href="/connect/zed">
+    `context_servers` in settings, API key or OAuth.
+  </Card>
+  <Card title="More clients" icon="plug" href="/connect/more-clients">
+    Cline, Warp, JetBrains Junie and AI Assistant.
+  </Card>
+</CardGroup>
+
+## Which sign-in to use
+
+| | OAuth (sign in with AdLoop) | API key |
+|---|---|---|
+| Setup | Click through a consent page | Copy a key into a config file |
+| Scope | Whole workspace | Restrictable per key (read-only, clients, toolsets) |
+| Agencies | Name the client in your request | Bind the key to one client |
+| Revoke | Settings → API keys → Connected AI apps | Settings → API keys |
+
+Chat apps in the browser only offer OAuth. Coding agents offer both; an API key is handy when you want a read-only or client-scoped connection, or on a machine without a browser.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

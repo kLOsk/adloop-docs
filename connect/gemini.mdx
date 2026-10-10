@@ -1,0 +1,104 @@
+---
+title: "Connect Gemini"
+description: "AdLoop Cloud in the Gemini app, Antigravity and Gemini CLI."
+---
+
+<Info>
+Google offers three ways in, and they changed in 2026 (checked 2026-10-10):
+
+- **Gemini app** (gemini.google.com): custom apps, for personal Google accounts in the US.
+- **Antigravity** (CLI and IDE): the successor of Gemini CLI for personal Google accounts since June 2026.
+- **Gemini CLI**: still available with Gemini Code Assist Standard or Enterprise, or with a paid Gemini API key.
+</Info>
+
+## Gemini app
+
+<Steps>
+  <Step title="Add a custom app">
+    On gemini.google.com: **Settings → Connected Apps**, under *Custom apps* click **Add a custom app** and enter:
+
+    ```
+    https://mcp.getadloop.com/mcp
+    ```
+
+    Click **Next**. Leave the advanced credentials empty; Gemini registers itself with AdLoop.
+  </Step>
+  <Step title="Authorize">
+    AdLoop's consent page opens. Sign in to your workspace and choose **Allow access**.
+  </Step>
+  <Step title="Use it">
+    In a chat, type `@`, pick AdLoop, and ask: *"Run the AdLoop health check."* Once set up on the web, it works in the Gemini mobile app too.
+  </Step>
+</Steps>
+
+Google currently limits custom apps to personal accounts of adults in the US with Keep Activity turned on, and to English. Work and school accounts can't add them yet.
+
+## Antigravity
+
+Antigravity reads `~/.gemini/config/mcp_config.json` (per workspace: `.agents/mcp_config.json`). Note the key `serverUrl`; Antigravity doesn't accept Gemini CLI's `httpUrl`.
+
+<Tabs>
+  <Tab title="Sign in with AdLoop (OAuth)">
+    ```json
+    {
+      "mcpServers": {
+        "adloop": {
+          "serverUrl": "https://mcp.getadloop.com/mcp"
+        }
+      }
+    }
+    ```
+
+    Then open the agent settings (`⌘,`) → **Customizations** and click **Authenticate** next to AdLoop. Approve on AdLoop's consent page, copy the code it shows back into Antigravity and click **Submit**.
+  </Tab>
+  <Tab title="API key">
+    ```json
+    {
+      "mcpServers": {
+        "adloop": {
+          "serverUrl": "https://mcp.getadloop.com/mcp",
+          "headers": { "Authorization": "Bearer alc_YOUR_KEY" }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+In the CLI (`agy`), `/mcp` opens the MCP manager with AdLoop's status. If you used AdLoop in Gemini CLI before, `agy plugin import gemini` carries the server entry over.
+
+## Gemini CLI
+
+```bash
+gemini mcp add --transport http -s user adloop https://mcp.getadloop.com/mcp
+```
+
+Then sign in from inside a session:
+
+```
+/mcp auth adloop
+```
+
+Your browser opens AdLoop's consent page; choose **Allow access**. This needs a browser on the same machine. On a server or over SSH, use an API key instead:
+
+```bash
+gemini mcp add --transport http -s user \
+  -H "Authorization: Bearer alc_YOUR_KEY" adloop https://mcp.getadloop.com/mcp
+```
+
+Both write to `~/.gemini/settings.json`, where the server sits under `mcpServers` with the key `httpUrl`. Check with `gemini mcp list` or `/mcp`.
+
+The [AdLoop extension](https://github.com/kLOsk/adloop-plugins) adds the server and AdLoop's usage rules in one step:
+
+```bash
+gemini extensions install https://github.com/kLOsk/adloop-plugins
+```
+
+## Notes
+
+- A connection made through OAuth uses your whole workspace. An API key can be [restricted](/cloud/api-keys) to read-only, single clients or chosen toolsets.
+- Every write goes through the [preview and confirm flow](/concepts/safety-model), whichever Gemini product you use.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

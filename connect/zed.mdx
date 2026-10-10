@@ -1,0 +1,51 @@
+---
+title: "Connect Zed"
+description: "Use AdLoop Cloud in Zed's agent panel."
+---
+
+## Add the server
+
+In Zed: **Settings → AI → MCP Servers → Add Server → Add Remote Server**. Or run **zed: open settings file** and add AdLoop under `context_servers` (user settings in `~/.config/zed/settings.json`, Windows `%APPDATA%\Zed\settings.json`; per project `.zed/settings.json`):
+
+<Tabs>
+  <Tab title="Sign in with AdLoop (OAuth)">
+    ```json
+    {
+      "context_servers": {
+        "adloop": {
+          "url": "https://mcp.getadloop.com/mcp"
+        }
+      }
+    }
+    ```
+
+    Zed shows a warning with an **Authenticate** button next to AdLoop. Click it, choose **Allow access** on AdLoop's consent page, and Zed keeps the token in your system keychain and refreshes it by itself.
+  </Tab>
+  <Tab title="API key">
+    ```json
+    {
+      "context_servers": {
+        "adloop": {
+          "url": "https://mcp.getadloop.com/mcp",
+          "headers": { "Authorization": "Bearer alc_YOUR_KEY" }
+        }
+      }
+    }
+    ```
+
+    Zed doesn't read environment variables here, so the key sits in the settings file: use your user settings, not a project file you commit. Create the key under **Settings → API keys** in the [dashboard](https://getadloop.com).
+  </Tab>
+</Tabs>
+
+## Verify
+
+A green dot next to AdLoop in the MCP Servers list means it's connected ("Server is active"). Open the agent panel and ask: *"Run the AdLoop health check."*
+
+## Notes
+
+- Zed asks before each tool call unless you change `agent.tool_permissions`; you can allow AdLoop's read tools individually as `mcp:adloop:<tool>`.
+- Every write goes through AdLoop's [preview and confirm flow](/concepts/safety-model) in addition to Zed's own prompt.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

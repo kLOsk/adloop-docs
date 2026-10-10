@@ -12,6 +12,12 @@ claude mcp add --transport http adloop https://mcp.getadloop.com/mcp \
   --header "Authorization: Bearer alc_YOUR_KEY"
 ```
 
+Or sign in with AdLoop instead of using a key: add the server without the header, then run `/mcp` in Claude Code, pick AdLoop and choose **Authenticate**. Your browser opens AdLoop's consent page.
+
+```bash
+claude mcp add --transport http adloop https://mcp.getadloop.com/mcp
+```
+
 ## Self-hosted
 
 After running `adloop init`:

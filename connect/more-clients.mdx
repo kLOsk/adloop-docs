@@ -1,0 +1,88 @@
+---
+title: "More clients"
+description: "Cline, Warp, JetBrains Junie, JetBrains AI Assistant, and any other MCP client."
+---
+
+Any client that can add a remote MCP server over Streamable HTTP works with AdLoop Cloud. It needs two things:
+
+- **URL:** `https://mcp.getadloop.com/mcp`
+- **Sign-in:** either OAuth (the client discovers AdLoop's sign-in by itself and opens the consent page), or the header `Authorization: Bearer alc_YOUR_KEY` with a key from **Settings → API keys** in the [dashboard](https://getadloop.com).
+
+The setups below were checked on 2026-10-10.
+
+## Cline
+
+Open the **MCP Servers** icon → **Remote Servers**, enter `adloop` and the URL, choose **Streamable HTTP** and click **Add Server**. Then click **Authenticate** to sign in. Or with an API key in `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "type": "streamableHttp",
+      "url": "https://mcp.getadloop.com/mcp",
+      "headers": { "Authorization": "Bearer alc_YOUR_KEY" }
+    }
+  }
+}
+```
+
+Keep `"type": "streamableHttp"`: without it Cline assumes the older SSE transport.
+
+## Warp
+
+**Settings → Agents → MCP servers → + Add** → *Streamable HTTP or SSE Server (URL)*, and paste:
+
+```json
+{
+  "adloop": {
+    "url": "https://mcp.getadloop.com/mcp"
+  }
+}
+```
+
+Warp opens the sign-in in your browser when the server starts. For Warp's cloud agents, which can't sign in through a browser, add the API key instead: `"headers": { "Authorization": "Bearer alc_YOUR_KEY" }`.
+
+## JetBrains Junie
+
+Add AdLoop to `~/.junie/mcp/mcp.json` (all projects) or `.junie/mcp/mcp.json` (one project), or under **Tools → Junie → MCP Settings**:
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "url": "https://mcp.getadloop.com/mcp"
+    }
+  }
+}
+```
+
+Run `/mcp`, choose AdLoop and **Authorize** to sign in in your browser. AdLoop shows as *Active* once connected.
+
+## JetBrains AI Assistant
+
+**Settings → Tools → AI Assistant → Model Context Protocol (MCP) → Add**, and paste:
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "url": "https://mcp.getadloop.com/mcp",
+      "headers": { "Authorization": "Bearer alc_YOUR_KEY" }
+    }
+  }
+}
+```
+
+The *Status* column shows whether AdLoop is connected; click it to see the tools.
+
+## Claude Desktop
+
+Claude Desktop uses the connectors of your Claude account, so set AdLoop up once as described in [claude.ai](/connect/claude-ai). The local `claude_desktop_config.json` is for servers on your own machine and isn't needed.
+
+## Your client isn't listed?
+
+If it supports remote MCP servers, use the URL and one of the two sign-ins above. Then ask: *"Run the AdLoop health check."* If sign-in fails, try the API key header; if the client only supports local (stdio) servers, use the [self-hosted edition](/quickstart/self-hosted) instead.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>

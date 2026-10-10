@@ -1,0 +1,81 @@
+---
+title: "Connect Devin Desktop (Windsurf)"
+description: "Add AdLoop Cloud to Devin Desktop, formerly Windsurf: Devin Local, the Devin CLI and the legacy Cascade agent."
+---
+
+<Info>
+Windsurf became **Devin Desktop** in June 2026. New agent tabs use **Devin Local**; the older **Cascade** agent reads a separate MCP list. Devin Local and the Devin CLI share one configuration (checked 2026-10-10).
+</Info>
+
+## Devin Local and Devin CLI
+
+The quickest way is the CLI:
+
+```bash
+devin mcp add -s user adloop https://mcp.getadloop.com/mcp
+devin mcp login adloop
+```
+
+`login` opens AdLoop's consent page; choose **Allow access**. Leave out `-s user` to add AdLoop to the current project only.
+
+Or edit `~/.config/devin/mcp_config.json` (Windows: `%APPDATA%\devin\mcp_config.json`; per project: `.devin/mcp_config.json`):
+
+<Tabs>
+  <Tab title="Sign in with AdLoop (OAuth)">
+    ```json
+    {
+      "mcpServers": {
+        "adloop": {
+          "url": "https://mcp.getadloop.com/mcp",
+          "transport": "http"
+        }
+      }
+    }
+    ```
+
+    If AdLoop shows **Needs auth** in the MCP list, click **Authenticate**.
+  </Tab>
+  <Tab title="API key">
+    ```json
+    {
+      "mcpServers": {
+        "adloop": {
+          "url": "https://mcp.getadloop.com/mcp",
+          "headers": { "Authorization": "Bearer ${env:ADLOOP_API_KEY}" }
+        }
+      }
+    }
+    ```
+
+    Set `ADLOOP_API_KEY` to a key from **Settings → API keys** in the [dashboard](https://getadloop.com) before starting Devin Desktop. To keep a key out of a shared project file, put the entry in `.devin/mcp_config.local.json` instead.
+  </Tab>
+</Tabs>
+
+Check with `devin mcp list`, then ask: *"Run the AdLoop health check."*
+
+## Legacy Cascade agent
+
+Cascade reads `~/.config/devin/mcp_config.json` too, but expects `serverUrl` (Windsurf versions before the rename used `~/.codeium/windsurf/mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "serverUrl": "https://mcp.getadloop.com/mcp",
+      "headers": { "Authorization": "Bearer ${env:ADLOOP_API_KEY}" }
+    }
+  }
+}
+```
+
+Open the file from the Cascade panel: **⋯** → MCPs → **Open MCP config file**. The MCPs section then lists AdLoop with its tools and an on/off switch.
+
+## Notes
+
+- Cascade can see at most 100 tools across all servers. If you run several, use an AdLoop key limited to a few [toolsets](/concepts/toolsets).
+- On team plans, once an admin allowlists any MCP server, all others are blocked. The allowlist entry must be named exactly `adloop`, like the config key.
+- MCP tools ask for your approval by default, and every AdLoop write goes through its own [preview and confirm flow](/concepts/safety-model) on top.
+
+<Tip>
+**Your AI can read these docs too.** Add `https://docs.getadloop.com/mcp` as an additional MCP server and your assistant can search this documentation while it works: setup answers, troubleshooting, and tool guidance on demand.
+</Tip>
