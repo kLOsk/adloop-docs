@@ -28,9 +28,14 @@ Custom connectors need a **Pro, Max or Enterprise** plan. On Enterprise, an admi
   </Step>
 </Steps>
 
+## After an AdLoop update
+
+Perplexity remembers AdLoop's tool list from when you connected it. When AdLoop adds tools, they only show up after a refresh: remove the AdLoop connector under **Account settings → Connectors** and add it again; Perplexity has no refresh button for custom connectors.
+
+Not sure whether yours is current? Ask: *"Run the AdLoop health check."* It lists the tools AdLoop offers you and says so when your app is showing an older list.
+
 ## Notes
 
-- Perplexity only reloads a connector's tool list when you remove and add the connector again. Do that after AdLoop gains new tools, for example a new [integration](/integrations/reddit-ads).
 - Enterprise admins can share the connector with the whole organization and choose whether members sign in individually.
 - Every write goes through the [preview and confirm flow](/concepts/safety-model): Perplexity can draft a change, but nothing is applied until you confirm it.
 

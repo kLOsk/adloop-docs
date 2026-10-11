@@ -94,6 +94,12 @@ The [AdLoop extension](https://github.com/kLOsk/adloop-plugins) adds the server 
 gemini extensions install https://github.com/kLOsk/adloop-plugins
 ```
 
+## After an AdLoop update
+
+The Gemini app remembers AdLoop's tool list from when you connected it. When AdLoop adds tools, they only show up after a refresh: under **Settings → Connected Apps**, disconnect AdLoop and connect it again. Antigravity and Gemini CLI read the list when they start, so a restart (or `/mcp` in the CLI) is enough there.
+
+Not sure whether yours is current? Ask: *"Run the AdLoop health check."* It lists the tools AdLoop offers you and says so when your app is showing an older list.
+
 ## Notes
 
 - A connection made through OAuth uses your whole workspace. An API key can be [restricted](/cloud/api-keys) to read-only, single clients or chosen toolsets.
