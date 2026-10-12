@@ -24,7 +24,7 @@ The fair-use ceilings on Pro and Agency sit far above anything a real workspace 
 
 Every Google Ads or Reddit Ads tool call is one operation, reads and drafts alike. The two platforms count together against one daily number.
 
-- **`confirm_and_apply`** counts toward the platform of the plan it applies. Applying a GA4 key event doesn't count.
+- **`confirm_and_apply`**, and a click on the [approval card](/concepts/safety-model#approval-cards-only-your-click-applies), counts toward the platform of the plan it applies. Applying a GA4 key event doesn't count.
 - **Cross-channel tools** that query Google Ads (`analyze_campaign_conversions`, `landing_page_analysis`, `attribution_check`) count as Google Ads operations.
 - **Not counted:** `health_check` and `list_accounts`, so checking that everything works never costs you operations.
 - **Refused calls aren't counted.** A call that stops before reaching the ad platform (setup not finished, a read-only key, a toolset the key doesn't include, the limit itself) shows up as activity but costs nothing.

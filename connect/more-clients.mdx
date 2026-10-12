@@ -79,6 +79,8 @@ The *Status* column shows whether AdLoop is connected; click it to see the tools
 
 Claude Desktop uses the connectors of your Claude account, so set AdLoop up once as described in [claude.ai](/connect/claude-ai). The local `claude_desktop_config.json` is for servers on your own machine and isn't needed.
 
+If you also run the self-hosted edition in Claude Desktop, switch one of the two off in the chat's connector menu. Both offer tools with the same names, and Claude may pick the wrong one.
+
 ## Your client isn't listed?
 
 If it supports remote MCP servers, use the URL and one of the two sign-ins above. Then ask: *"Run the AdLoop health check."* If sign-in fails, try the API key header; if the client only supports local (stdio) servers, use the [self-hosted edition](/quickstart/self-hosted) instead.
