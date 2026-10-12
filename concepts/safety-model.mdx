@@ -20,9 +20,15 @@ In those apps, only the click applies a change:
 - If the AI calls `confirm_and_apply` with `dry_run=false` itself, AdLoop refuses (`APPROVE_ON_CARD`). A typed "yes, apply it" in the chat is not enough, and neither is "Always allow" in the app's permission settings.
 - Changes that cannot be undone also need the "cannot be undone" box ticked on the card. The server checks it.
 
-Apps without card support keep the chat flow: the AI shows the preview and calls `confirm_and_apply` after your explicit confirmation.
+## Confirmation dialogs in apps without cards
 
-If your app claims card support but does not show the card, the workspace owner can allow approval in chat as well (Cloud: **Settings → Safety → Also allow approval in chat**; self-hosted: `safety.allow_chat_approval: true`). Combined with "Always allow" for `confirm_and_apply` in your AI app, the AI could then apply changes without any click, so leave it off where the card works.
+Apps that don't show cards but support confirmation dialogs (MCP elicitation) get a dialog instead: when the AI calls `confirm_and_apply` with `dry_run=false`, AdLoop itself asks you in the app's dialog what will change and whether to apply it. Changes that cannot be undone need an extra "cannot be undone" tick. The AI cannot answer the dialog for you; if you decline or close it, nothing changes and the preview stays pending.
+
+There is no dialog for dry runs, or for a plan that still needs its required dry run first. On AdLoop Cloud the dialog needs an app on the current MCP protocol (2026-07-28); apps on older protocol versions keep the chat flow there. Self-hosted, both work.
+
+Apps with neither cards nor dialogs keep the chat flow: the AI shows the preview and calls `confirm_and_apply` after your explicit confirmation.
+
+If the card or the dialog doesn't work in your app, the workspace owner can allow approval in chat as well, which skips both (Cloud: **Settings → Safety → Also allow approval in chat**; self-hosted: `safety.allow_chat_approval: true`). Combined with "Always allow" for `confirm_and_apply` in your AI app, the AI could then apply changes without any click, so leave it off where the card works.
 
 ## Dry-run by default
 
