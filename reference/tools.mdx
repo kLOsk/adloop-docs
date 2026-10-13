@@ -39,6 +39,8 @@ Google Ads reads, writes, and planning.
 | `discover_keywords` | Read | Discover new keyword ideas using Google Ads Keyword Planner. |
 | `draft_ad_group` | Write | Draft a new ad group within an existing campaign — returns a PREVIEW, does NOT create. |
 | `draft_ai_max_settings` | Write | Draft AI Max controls for a Search campaign — returns a PREVIEW. |
+| `draft_asset_group_assets` | Write | Draft adding and/or removing assets of a Performance Max asset group — returns a PREVIEW. |
+| `draft_asset_group_signals` | Write | Draft adding search themes or an audience signal to a Performance Max asset group, or removing signals — PREVIEW. |
 | `draft_assign_custom_conversion_goal` | Write | Point a campaign at a custom conversion goal — returns a PREVIEW. |
 | `draft_callouts` | Write | Draft campaign callout assets — returns a PREVIEW. |
 | `draft_campaign` | Write | Draft a full campaign structure — returns a PREVIEW, does NOT create anything. |
@@ -48,9 +50,11 @@ Google Ads reads, writes, and planning.
 | `draft_demographic_targeting` | Write | Draft demographic targeting (age/gender/parental status/income) — returns a PREVIEW. |
 | `draft_image_assets` | Write | Draft campaign image assets from local files, public image URLs or uploads — returns a PREVIEW. |
 | `draft_keywords` | Write | Draft keyword additions — returns a PREVIEW, does NOT add keywords. |
+| `draft_pmax_product_exclusions` | Write | Draft which products a retail Performance Max asset group excludes — returns a PREVIEW. |
 | `draft_prepare_brand_exclusions` | Write | Draft the safe standard state for brand exclusions — returns a PREVIEW. |
 | `draft_remove_conversion_action` | Write | Draft a REMOVAL of a ConversionAction — returns a PREVIEW. |
 | `draft_responsive_search_ad` | Write | Draft a Responsive Search Ad — returns a PREVIEW, does NOT create the ad. |
+| `draft_shopping_campaign` | Write | Draft a Standard Shopping campaign that advertises a Merchant Center feed — returns a PREVIEW. |
 | `draft_sitelinks` | Write | Draft sitelink extensions for a campaign — returns a PREVIEW. |
 | `draft_structured_snippets` | Write | Draft campaign structured snippet assets — returns a PREVIEW. |
 | `draft_update_conversion_action` | Write | Draft a partial UPDATE of an existing ConversionAction — returns PREVIEW. |
@@ -61,6 +65,7 @@ Google Ads reads, writes, and planning.
 | `estimate_budget` | Read | Forecast clicks, cost, and conversions for a set of keywords. |
 | `get_ad_performance` | Read | Get ad-level performance data including headlines, descriptions, and metrics. |
 | `get_ai_max_settings` | Read | Read the AI Max controls of Search campaigns, per campaign and ad group. |
+| `get_asset_group_signals` | Read | Search themes and the audience signal of a Performance Max asset group, plus the account's audiences. |
 | `get_audience_performance` | Read | Get audience segment performance metrics. |
 | `get_brand_list_brands` | Read | List the brands inside a brand list. |
 | `get_brand_list_campaigns` | Read | List which campaigns a brand list is attached to. |

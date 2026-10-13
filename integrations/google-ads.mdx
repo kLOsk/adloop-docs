@@ -29,7 +29,7 @@ Google Ads shares one Google connection with [Google Analytics](/integrations/go
 - **Money is in account currency.** The read tools compute `metrics.cost`, `metrics.cpa` and average CPC for you. Only `run_gaql` returns Google's raw `cost_micros` (divide by 1,000,000).
 - **Compact mode for audits.** `get_campaign_performance`, `get_keyword_performance`, `get_search_terms` and `get_ad_performance` accept `compact=true`: account totals, the top ten rows and ready-made offender lists (zero-conversion spenders, low quality scores, wasteful search terms, thin ads) instead of every row.
 - **Keyword Planner needs your market.** `discover_keywords` and `estimate_budget` default to Germany and English; pass the `geo_target_id` and `language_id` you actually target.
-- **Performance Max is read-only.** `get_pmax_performance` reports asset groups with their Ad Strength and a network breakdown; most PMax traffic lands in Google's catch-all `MIXED` network, so an exact Search vs YouTube vs Display split is not available.
+- **Performance Max: edit, don't build.** `get_pmax_performance` reports asset groups with their Ad Strength and a network breakdown; most PMax traffic lands in Google's catch-all `MIXED` network, so an exact Search vs YouTube vs Display split is not available. Existing asset groups can be edited (assets, signals, product exclusions, status); new PMax campaigns are still built in Google Ads.
 - **Recommendations are read, not applied.** `get_recommendations` returns Google's suggestions with estimated impact and flags budget raises that mainly benefit Google; acting on one means drafting the change yourself.
 - **Ads clicks above GA4 sessions** are normal in the EU. See [Consent and data gaps](/concepts/consent-and-data).
 
@@ -53,13 +53,14 @@ Reads: `list_accounts`, `get_campaign_performance` (with search impression share
 
 Writes (all previewed):
 
-- **Structure:** `draft_campaign`, `draft_ad_group`, `update_campaign` (bidding, budget, locations, languages, networks, Maximize Clicks CPC ceiling), `update_ad_group` (name, manual CPC bid).
+- **Structure:** `draft_campaign`, `draft_shopping_campaign` (Standard Shopping for a linked Merchant Center feed), `draft_ad_group`, `update_campaign` (bidding, budget, locations, languages, networks, Maximize Clicks CPC ceiling), `update_ad_group` (name, manual CPC bid).
 - **Ads:** `draft_responsive_search_ad`, `update_responsive_search_ad`.
 - **Keywords and exclusions:** `draft_keywords`, `add_negative_keywords`, `add_negative_locations`, `draft_demographic_targeting` (age, gender, parental status, income; exclusions by default).
 - **Shared negative keyword lists:** `propose_negative_keyword_list` (create and attach), `add_to_negative_keyword_list`, `attach_shared_set_to_campaigns`, `detach_shared_set_from_campaigns`.
 - **Campaign assets:** `draft_sitelinks`, `draft_callouts`, `draft_structured_snippets`, `draft_image_assets` (from public image URLs everywhere, uploaded images, or local files when self-hosted; the image is fetched only from public addresses, and if it changes between preview and apply, the apply is refused). For an image without a public URL, see [Uploading images](#uploading-images).
 - **Conversion actions:** `draft_create_conversion_action`, `draft_update_conversion_action`, `draft_remove_conversion_action`.
-- **Status:** `pause_entity`, `enable_entity`, `remove_entity`.
+- **Performance Max:** `draft_asset_group_assets` (add and remove text, image and YouTube assets in one change), `get_asset_group_signals` and `draft_asset_group_signals` (search themes, audience signal), `draft_pmax_product_exclusions` (exclude products by item id, brand or custom label).
+- **Status:** `pause_entity`, `enable_entity`, `remove_entity` (campaigns, ad groups, ads, keywords, PMax asset groups).
 
 The full list with parameters is in the [tool reference](/reference/tools#google-ads-ads); the toolset slug is `ads`. The tools that join Ads with Analytics (`analyze_campaign_conversions`, `attribution_check`, `landing_page_analysis`) are in the `tracking` toolset, see [Tracking audit](/integrations/tracking-audit).
 
@@ -72,9 +73,20 @@ The full list with parameters is in the [tool reference](/reference/tools#google
 5. **Shared negatives:** a new campaign does not inherit your shared negative keyword lists; attach them with `attach_shared_set_to_campaigns`.
 6. **Enable** the ad, then the campaign, with `enable_entity`.
 
+## Shopping and Performance Max
+
+**Standard Shopping.** `draft_shopping_campaign` builds a campaign that advertises a Merchant Center feed: budget, campaign (paused), a product ad group with its Shopping ad and one "All products" group, in one request that the dry run has Google validate. The Merchant Center account has to be linked to the Ads account; the draft checks it. Shopping takes no keywords and no language targeting (the feed's language applies). Bidding is manual CPC, Maximize clicks or target ROAS, and `product_bid` is always needed because Google sets it on the product group. Check `get_merchant_feed_health` before enabling: disapproved products do not serve.
+
+**Editing Performance Max.**
+
+- **Assets:** `draft_asset_group_assets` adds new headlines, long headlines, descriptions, images and YouTube videos and removes old ones in the same change. Replacing an asset that way never drops the group below Google's minimums (three headlines, one long headline, two descriptions with one of at most 60 characters). Images can be public URLs or [uploads](#uploading-images); they are sorted into landscape, square or portrait by their aspect ratio.
+- **Signals:** `draft_asset_group_signals` adds search themes or sets the group's audience signal. Signals steer Performance Max; they do not restrict where it serves.
+- **Product exclusions:** `draft_pmax_product_exclusions` takes the complete list of item ids, brands or custom label values to exclude from a retail asset group. Asset groups with nested product filters are left to the Google Ads interface.
+- **Status:** `pause_entity` and `enable_entity` take `asset_group`.
+
 ## Not covered yet
 
-Audiences and remarketing lists, ad schedules and bid adjustments, Performance Max asset groups, Shopping, Demand Gen and video campaigns, experiments, offline conversion uploads on AdLoop Cloud (the self-hosted edition has them), and applying Google's recommendations. Use the Google Ads interface for these; AdLoop can still report on the campaigns.
+Audiences and remarketing lists, ad schedules and bid adjustments, building new Performance Max campaigns, splitting Shopping product groups by brand or label, Demand Gen and video campaigns, experiments, offline conversion uploads on AdLoop Cloud (the self-hosted edition has them), and applying Google's recommendations. Use the Google Ads interface for these; AdLoop can still report on the campaigns.
 
 ## Operations and limits
 
