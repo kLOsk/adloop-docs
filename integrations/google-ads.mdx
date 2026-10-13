@@ -57,7 +57,7 @@ Writes (all previewed):
 - **Ads:** `draft_responsive_search_ad`, `update_responsive_search_ad`.
 - **Keywords and exclusions:** `draft_keywords`, `add_negative_keywords`, `add_negative_locations`, `draft_demographic_targeting` (age, gender, parental status, income; exclusions by default).
 - **Shared negative keyword lists:** `propose_negative_keyword_list` (create and attach), `add_to_negative_keyword_list`, `attach_shared_set_to_campaigns`, `detach_shared_set_from_campaigns`.
-- **Campaign assets:** `draft_sitelinks`, `draft_callouts`, `draft_structured_snippets`, `draft_image_assets` (from public image URLs everywhere, or local files when self-hosted; the image is fetched only from public addresses, and if it changes between preview and apply, the apply is refused).
+- **Campaign assets:** `draft_sitelinks`, `draft_callouts`, `draft_structured_snippets`, `draft_image_assets` (from public image URLs everywhere, uploaded images, or local files when self-hosted; the image is fetched only from public addresses, and if it changes between preview and apply, the apply is refused). For an image without a public URL, see [Uploading images](#uploading-images).
 - **Conversion actions:** `draft_create_conversion_action`, `draft_update_conversion_action`, `draft_remove_conversion_action`.
 - **Status:** `pause_entity`, `enable_entity`, `remove_entity`.
 
@@ -83,3 +83,13 @@ On AdLoop Cloud, every Google Ads tool call counts toward your workspace's daily
 ## What AdLoop stores
 
 On AdLoop Cloud: an encrypted refresh token, your Google email address, the permissions you granted, and the selected Ads account (ID, name, currency, and the manager account it is reached through). Campaign and performance data pass through and are never stored; the change log records what was changed. Self-hosted, the token stays in `~/.adloop/token.json` and the audit log in `~/.adloop/audit.log` on your machine. See the [privacy policy](https://getadloop.com/privacy) for the full description.
+
+## Uploading images
+
+An image on your computer, or one you attached in the chat, has no public URL, and an AI app cannot pass the file itself to a tool. Ask for an upload instead (the AI calls `upload_images`):
+
+- **Apps that show AdLoop cards** (Claude, ChatGPT, VS Code and others with MCP Apps): an upload card appears in the chat. Drop PNG, JPEG or GIF files on it, up to 5 MB each. The card posts the upload ids into the chat when it is done.
+- **Other apps on AdLoop Cloud:** the AI gives you an upload link, valid for 30 minutes. Open it in the browser and drop the images, then tell the AI you are done. A coding agent that has the files on disk can upload them itself with `curl -T`.
+- **Self-hosted:** the card works in apps that show it; otherwise pass local files directly with `image_paths`.
+
+The AI then creates the assets from the upload ids (`draft_image_assets` with `upload_ids`), with the usual preview and approval. On AdLoop Cloud, uploads also work for Reddit image and carousel ads. Uploads are deleted 24 hours after the upload.

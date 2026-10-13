@@ -17,6 +17,8 @@ Included with every toolset selection.
 |------|------|--------------|
 | `confirm_and_apply` | Destructive | Execute a previously previewed change. |
 | `health_check` | Read | Test AdLoop connectivity — checks OAuth token, GA4 API, Google Ads API, |
+| `list_uploads` | Read | List the images the user uploaded to AdLoop that have not expired. |
+| `upload_images` | Read | Let the user upload images (PNG, JPEG, GIF up to 5 MB) for ad assets. |
 
 
 ## Google Ads (`ads`)
@@ -44,7 +46,7 @@ Google Ads reads, writes, and planning.
 | `draft_create_conversion_action` | Write | Draft a new Google Ads ConversionAction — returns a PREVIEW. |
 | `draft_custom_conversion_goal` | Write | Create a custom conversion goal — returns a PREVIEW. |
 | `draft_demographic_targeting` | Write | Draft demographic targeting (age/gender/parental status/income) — returns a PREVIEW. |
-| `draft_image_assets` | Write | Draft campaign image assets from local files or public image URLs — returns a PREVIEW. |
+| `draft_image_assets` | Write | Draft campaign image assets from local files, public image URLs or uploads — returns a PREVIEW. |
 | `draft_keywords` | Write | Draft keyword additions — returns a PREVIEW, does NOT add keywords. |
 | `draft_prepare_brand_exclusions` | Write | Draft the safe standard state for brand exclusions — returns a PREVIEW. |
 | `draft_remove_conversion_action` | Write | Draft a REMOVAL of a ConversionAction — returns a PREVIEW. |
