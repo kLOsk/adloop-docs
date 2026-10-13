@@ -47,13 +47,13 @@ Ads Manager's "time of day" grid is the ad group's `schedule`: a list of blocks 
 
 ## Tools
 
-Reads: `list_reddit_accounts`, `list_reddit_funding_instruments`, `get_reddit_campaigns`, `get_reddit_ad_groups`, `get_reddit_ads`, `get_reddit_performance` (with `compact` mode and `insights[]`), `run_reddit_report` (raw fields and breakdowns), `get_reddit_pixels`, `search_reddit_targeting` (including Reddit's related-community suggestions), `get_reddit_account_history` (who changed what), `estimate_reddit_ad_group` (audience, delivery and bid estimates before you build).
+Reads: `list_reddit_accounts`, `list_reddit_funding_instruments`, `get_reddit_campaigns`, `get_reddit_ad_groups`, `get_reddit_ads`, `get_reddit_performance` (with `compact` mode and `insights[]`), `run_reddit_report` (raw fields and breakdowns), `get_reddit_pixels`, `get_reddit_audiences` (custom and saved audiences, and which ad groups use them), `search_reddit_targeting` (including Reddit's related-community suggestions), `get_reddit_account_history` (who changed what), `estimate_reddit_ad_group` (audience, delivery and bid estimates before you build).
 
 Writes (all previewed): `pause_reddit_entity`, `enable_reddit_entity`, `remove_reddit_entity` (archive, irreversible, double confirmation), `update_reddit_campaign`, `update_reddit_ad_group`, `update_reddit_ad` (landing URL, name, comments), `draft_reddit_campaign`, `draft_reddit_ad_group`, `draft_reddit_ad`. Keywords and geolocations in an ad-group draft are validated with Reddit before the preview. Ad groups can also target devices (desktop or mobile, by operating system and version), mobile carriers and view modes; `search_reddit_targeting` looks up valid devices and carriers.
 
 ### Creative
 
-`get_reddit_ads` with `include_copy=true` returns each ad's post: type (TEXT, IMAGE, VIDEO, CAROUSEL), headline, body, destination URL, call to action and media, one request per distinct post, so a creative review does not need a browser. `draft_reddit_ad` either creates a post and the ad, or with `post_id` promotes a post that already exists, keeping its upvotes and comments. Two Reddit rules the tools enforce before the dry run: a live post's headline and body cannot be edited (draft a new post for new copy), and a TEXT ("free form") ad carries no `click_url` at all, because it opens the post itself and the link has to be in the body. Placements are the `locations` list on the ad group: `FEED` and/or `COMMENTS_PAGE`.
+`get_reddit_ads` with `include_copy=true` returns each ad's post: type (TEXT, IMAGE, VIDEO, CAROUSEL), headline, body, destination URL, call to action and media, one request per distinct post, so a creative review does not need a browser. `draft_reddit_ad` either creates a post and the ad, or with `post_id` promotes a post that already exists, keeping its upvotes and comments. New posts can be text, image, video (an MP4 or MOV link plus a thumbnail) or a carousel of 2 to 6 image cards, each with its own caption and link. Reddit downloads the media from the URLs you give, so they have to be direct links to the files; the draft checks each one and refuses a web page or a file over Reddit's size limit. Two Reddit rules the tools enforce before the dry run: a live post's headline and body cannot be edited (draft a new post for new copy), and a TEXT ("free form") ad carries no `click_url` at all, because it opens the post itself and the link has to be in the body. Placements are the `locations` list on the ad group: `FEED` and/or `COMMENTS_PAGE`.
 
 The full list with parameters is in the [tool reference](/reference/tools#reddit-ads-reddit); the toolset slug is `reddit`.
 
@@ -65,8 +65,19 @@ The order is campaign → ad group → ad, each created paused and each through 
 2. `list_reddit_funding_instruments` for a servable billing instrument and the profile that will author the post.
 3. `search_reddit_targeting` for community, interest, geolocation and language ids (`community_suggestions` finds related subreddits). Untargeted ad groups are refused.
 3a. `estimate_reddit_ad_group` with the same targeting and budget: audience size, expected delivery, and Reddit's suggested bid range.
-4. `draft_reddit_campaign` → `draft_reddit_ad_group` (budget, bid, pixel, targeting) → `draft_reddit_ad` (headline, verified click URL, call to action). An IMAGE ad clicks through to the landing page; a TEXT ad clicks through to the post itself, so the link has to be in the body (the tool insists on it). Posts cannot be edited afterwards.
+4. `draft_reddit_campaign` → `draft_reddit_ad_group` (budget, bid, pixel, targeting) → `draft_reddit_ad` (headline, verified click URL, call to action). IMAGE, VIDEO and CAROUSEL ads click through to the landing page; a TEXT ad clicks through to the post itself, so the link has to be in the body (the tool insists on it). Posts cannot be edited afterwards.
 5. Enable the ad, then the ad group, then the campaign. Enabling an ad sends it to Reddit's policy review; expect `PENDING_APPROVAL` for up to a day, then check `get_reddit_ads` for a `rejection_reason`.
+
+## Retargeting audiences
+
+`draft_reddit_custom_audience` builds an audience from data Reddit already has, so nothing personal is uploaded:
+
+- **Website visitors** (`PIXEL_RETARGETING`): people the pixel saw on your site in the last 1 to 90 days, for the events you pick (every page visit, or warmer signals such as add to cart, sign up or a custom event).
+- **Engaged people** (`ENGAGEMENT_RETARGETING`): people who saw, clicked, upvoted, commented on or watched the ads of campaigns you name, in the last 1 to 180 days.
+
+Reddit fills a new audience over a few hours and needs roughly 1,000 matched people before an ad group delivers to it. `get_reddit_audiences` shows each audience's status, estimated size and the ad groups that use it. To use one, set `custom_audience_ids` on an ad group (it narrows the ad group to that audience) or `excluded_custom_audience_ids` (it keeps those people out, for example buyers in a prospecting ad group).
+
+Customer lists (emails or phone numbers) are not supported: they would upload personal data, which needs its own consent and legal review.
 
 ## Operations and limits
 
