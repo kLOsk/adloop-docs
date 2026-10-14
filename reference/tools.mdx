@@ -42,6 +42,7 @@ Google Ads reads, writes, and planning.
 | `draft_asset_group_assets` | Write | Draft adding and/or removing assets of a Performance Max asset group — returns a PREVIEW. |
 | `draft_asset_group_signals` | Write | Draft adding search themes or an audience signal to a Performance Max asset group, or removing signals — PREVIEW. |
 | `draft_assign_custom_conversion_goal` | Write | Point a campaign at a custom conversion goal — returns a PREVIEW. |
+| `draft_audience_attachment` | Write | Draft attaching audiences to a campaign or ad group as observation, targeting or exclusion: returns a PREVIEW. |
 | `draft_callouts` | Write | Draft campaign callout assets — returns a PREVIEW. |
 | `draft_campaign` | Write | Draft a full campaign structure — returns a PREVIEW, does NOT create anything. |
 | `draft_clear_custom_conversion_goal` | Write | Put a campaign back on the account-level goals — returns a PREVIEW. |
@@ -66,7 +67,9 @@ Google Ads reads, writes, and planning.
 | `get_ad_performance` | Read | Get ad-level performance data including headlines, descriptions, and metrics. |
 | `get_ai_max_settings` | Read | Read the AI Max controls of Search campaigns, per campaign and ad group. |
 | `get_asset_group_signals` | Read | Search themes and the audience signal of a Performance Max asset group, plus the account's audiences. |
+| `get_audience_lists` | Read | The account's own audiences: remarketing and customer lists, custom segments, combined segments. |
 | `get_audience_performance` | Read | Get audience segment performance metrics. |
+| `get_audience_targeting` | Read | Audiences attached to one campaign or ad group, its exclusions, and the audience mode. |
 | `get_brand_list_brands` | Read | List the brands inside a brand list. |
 | `get_brand_list_campaigns` | Read | List which campaigns a brand list is attached to. |
 | `get_brand_lists` | Read | List all brand lists (SharedSets of type BRANDS) in the account. |
@@ -91,6 +94,7 @@ Google Ads reads, writes, and planning.
 | `remove_entity` | Destructive | Draft REMOVING an entity — returns a PREVIEW. This is IRREVERSIBLE. |
 | `remove_from_brand_list` | Destructive | Remove brands from a brand list — returns a PREVIEW. |
 | `run_gaql` | Read | Execute an arbitrary GAQL (Google Ads Query Language) query. |
+| `search_audience_segments` | Read | Find Google's in-market and affinity segments by name, with the segment_id to attach. |
 | `suggest_brands` | Read | Resolve a brand name to the brands Google recognizes for it. |
 | `update_ad_group` | Write | Draft an ad group update for name and/or manual CPC bid — returns a PREVIEW. |
 | `update_campaign` | Write | Draft an update to an existing campaign — returns a PREVIEW, does NOT apply. |

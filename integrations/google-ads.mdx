@@ -84,9 +84,21 @@ The full list with parameters is in the [tool reference](/reference/tools#google
 - **Product exclusions:** `draft_pmax_product_exclusions` takes the complete list of item ids, brands or custom label values to exclude from a retail asset group. Asset groups with nested product filters are left to the Google Ads interface.
 - **Status:** `pause_entity` and `enable_entity` take `asset_group`.
 
+## Audiences
+
+`get_audience_lists` shows the account's remarketing and customer lists (size for Search and Display, open or closed), custom segments and combined segments; `search_audience_segments` finds Google's in-market and affinity segments by name. `get_audience_targeting` shows what a campaign or ad group has attached and its audience mode.
+
+`draft_audience_attachment` attaches audiences in one of three ways:
+
+- **Observation** (the default): the audience adjusts bids and shows up in reports, and the campaign keeps its reach.
+- **Targeting:** the ads only reach people in the audience. Impressions usually drop sharply, so it needs a double confirmation.
+- **Exclusion** (`exclude=True`): keeps people out, e.g. recent buyers on a prospecting campaign.
+
+The draft refuses what Google doesn't allow: custom segments on Search, combined segments outside Search, audiences at both campaign and ad group level, and targeting with a list too small to serve on Search (under 1,000 users). Performance Max takes audiences as asset group signals instead. Remove an audience with `remove_entity` and the `remove_id` from `get_audience_targeting`. Creating audiences stays in the Google Ads interface.
+
 ## Not covered yet
 
-Audiences and remarketing lists, ad schedules and bid adjustments, building new Performance Max campaigns, splitting Shopping product groups by brand or label, Demand Gen and video campaigns, experiments, offline conversion uploads on AdLoop Cloud (the self-hosted edition has them), and applying Google's recommendations. Use the Google Ads interface for these; AdLoop can still report on the campaigns.
+Creating audiences, ad schedules and bid adjustments, building new Performance Max campaigns, splitting Shopping product groups by brand or label, Demand Gen and video campaigns, experiments, offline conversion uploads on AdLoop Cloud (the self-hosted edition has them), and applying Google's recommendations. Use the Google Ads interface for these; AdLoop can still report on the campaigns.
 
 ## Operations and limits
 
