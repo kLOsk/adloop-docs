@@ -3,7 +3,7 @@ title: "Toolsets"
 description: "Expose only the tools you use and cut your AI's context cost."
 ---
 
-Most MCP clients load **every tool schema into the model's context at the start of every conversation**. AdLoop's full catalog costs roughly 18k tokens per session that way, before you type a word. Toolsets let you expose a subset.
+Most MCP clients load **every tool schema into the model's context at the start of every conversation**. With AdLoop's full catalog that is a noticeable share of the context window, paid before you type a word. Toolsets let you expose a subset.
 
 ## The toolsets
 
@@ -18,11 +18,23 @@ Most MCP clients load **every tool schema into the model's context at the start 
 | `merchant` | Merchant Center feed health |
 | `reddit` | Reddit Ads reads, writes, and planning |
 
+### Narrowing Google Ads
+
+Self-hosted, you can also pick part of Google Ads instead of the whole `ads` toolset:
+
+| Subset | Covers |
+|--------|--------|
+| `ads:read` | Ads reports, GAQL, and the Ads/Analytics cross-checks (`attribution_check`, `analyze_campaign_conversions`, `landing_page_analysis`) |
+| `ads:write` | Ads drafts and changes. Turns on `ads:read` too, because a draft needs the reads first (IDs, bidding strategy) |
+| `ads:plan` | Keyword ideas and budget forecasts (`discover_keywords`, `estimate_budget`) |
+
+`ads:read,ga4` suits audits and diagnosis; `ads:plan` alone suits keyword research.
+
 `health_check` and `confirm_and_apply` are always included, whatever you select, so diagnostics and the [safety gate](/concepts/safety-model) can never be filtered away.
 
 ## What it saves
 
-Measured against the live tools/list: the full catalog is ≈18k tokens, `ads,ga4` is ≈13k, and a `ga4`-only selection is ≈2k — an 88% reduction. Toolsets are per **consumer**, not per install: one AdLoop setup can serve a trimmed Cursor and a full-catalog Claude Code side by side.
+Measured against the live tools/list: `ads:read,ga4` costs about 40% of `ads,ga4`, and `ads:plan` alone about 5% of the full catalog. Toolsets are per **consumer**, not per install: one AdLoop setup can serve a trimmed Cursor and a full-catalog Claude Code side by side.
 
 ## AdLoop Cloud: per API key
 
@@ -31,7 +43,7 @@ Pick toolsets when creating a key under **Settings → API keys**. The server th
 ## Self-hosted: environment variable
 
 ```json
-"env": { "ADLOOP_TOOLSETS": "ads,ga4" }
+"env": { "ADLOOP_TOOLSETS": "ads:read,ga4" }
 ```
 
 Set it in your MCP client's configuration (the `adloop init` wizard offers this and writes it into the snippets). Unset means the full catalog; unknown names fail at startup listing the valid ones.
