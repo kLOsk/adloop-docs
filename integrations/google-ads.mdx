@@ -11,9 +11,9 @@ Google Ads shares one Google connection with [Google Analytics](/integrations/go
 
 <Tabs>
   <Tab title="AdLoop Cloud">
-    The onboarding wizard (later: **Settings → Google & accounts → Connect Google account**) asks which Google products your AI may use and requests only those permissions. Keep **Google Ads** ticked; Google's consent dialog then asks for access to your Ads data. Google offers no read-only permission for Ads, so for "analyse but never change" use a [read-only API key](/concepts/safety-model#read-only-keys).
+    The onboarding wizard (later: **Settings → Google → Connect Google account**) asks which Google products your AI may use and requests only those permissions. Keep **Google Ads** ticked; Google's consent dialog then asks for access to your Ads data. Google offers no read-only permission for Ads, so for "analyse but never change" use a [read-only API key](/concepts/safety-model#read-only-keys).
 
-    Then pick the account. Accounts you reach directly appear in the list; picking a manager account (MCC) opens a second list with the accounts under it, and AdLoop reaches the chosen account through the manager. **I do not use Google Ads** leaves the Ads tools switched off. Agencies connect Google once under **Settings → Google connection** and pick an Ads account per client under **Settings → Clients** (see [Clients](/cloud/clients)).
+    Then pick the account. Accounts you reach directly appear in the list; picking a manager account (MCC) opens a second list with the accounts under it, and AdLoop reaches the chosen account through the manager. **I do not use Google Ads** leaves the Ads tools switched off. Agencies connect Google once under **Settings → Google** and pick an Ads account per client under **Settings → Clients** (see [Clients](/cloud/clients)).
 
     **Disconnect Google account** revokes the grant at Google and deletes the stored token. Because all Google products share one grant, Analytics and the others disconnect with it.
   </Tab>
