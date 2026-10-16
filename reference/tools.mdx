@@ -138,9 +138,10 @@ Google Tag Manager reads and (opt-in) writes.
 | Tool | Type | What it does |
 |------|------|--------------|
 | `audit_event_coverage` | Read | Three-way audit: codebase events ↔ GTM tags ↔ GA4 actual fires. |
-| `draft_delete_gtm_entity` | Destructive | Draft deleting a Tag Manager tag or trigger — returns a PREVIEW. |
+| `draft_delete_gtm_entity` | Destructive | Draft deleting a Tag Manager tag, trigger or variable — returns a PREVIEW. |
 | `draft_gtm_tag` | Write | Draft creating or updating a Tag Manager tag — returns a PREVIEW. |
 | `draft_gtm_trigger` | Write | Draft creating or updating a Tag Manager trigger — returns a PREVIEW. |
+| `draft_gtm_variable` | Write | Draft creating or updating a Tag Manager variable: returns a PREVIEW. |
 | `draft_publish_gtm_workspace` | Destructive | Draft publishing a Tag Manager workspace LIVE — returns a PREVIEW. |
 | `draft_rollback_gtm_version` | Destructive | Draft republishing an older Tag Manager version LIVE; returns a PREVIEW. |
 | `get_gtm_tag` | Read | Get the full RAW configuration for a single GTM tag. |

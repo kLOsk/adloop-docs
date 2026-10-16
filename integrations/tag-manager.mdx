@@ -51,10 +51,11 @@ Parameters are in the [tool reference](/reference/tools#tag-manager-gtm); the to
 
 ## Changes (self-hosted, opt-in)
 
-The self-hosted edition can create and update tags and triggers, delete them, publish a workspace, and roll the container back to an earlier version: `draft_gtm_tag`, `draft_gtm_trigger`, `draft_delete_gtm_entity`, `draft_publish_gtm_workspace` and `draft_rollback_gtm_version`. It's off until you set `gtm.write_enabled: true` in the [config](/self-hosting/configuration). Turning it on asks for a new Google consent with the Tag Manager edit and publish permissions, and your Google account needs Edit (and Publish) rights on the container.
+The self-hosted edition can create and update tags, triggers and variables, delete them, publish a workspace, and roll the container back to an earlier version: `draft_gtm_tag`, `draft_gtm_trigger`, `draft_gtm_variable`, `draft_delete_gtm_entity`, `draft_publish_gtm_workspace` and `draft_rollback_gtm_version`. It's off until you set `gtm.write_enabled: true` in the [config](/self-hosting/configuration). Turning it on asks for a new Google consent with the Tag Manager edit and publish permissions, and your Google account needs Edit (and Publish) rights on the container.
 
 - Tag and trigger drafts only change a **workspace**. Nothing reaches your site until a publish is applied, and the publish preview lists every pending change in the workspace, including other people's edits.
-- **Custom HTML** tags are refused unless `gtm.allow_custom_html: true` is set as well.
+- **Custom HTML** tags and **Custom JavaScript** variables are refused unless `gtm.allow_custom_html: true` is set as well, also when a publish or rollback would bring one live.
+- **Variables:** Data Layer Variables, the usual source for GA4 ecommerce values, need just a name and the dataLayer key (`ecommerce.value`, `ecommerce.transaction_id`, …). Renaming a variable that tags or triggers use as `{{name}}` is refused, because the references would break (rename it in the Tag Manager interface instead), and so is deleting one that is still in use.
 - Every change goes through the [preview and confirm flow](/concepts/safety-model). A publish returns the version it replaced, which is your way back.
 
 ## Limits
