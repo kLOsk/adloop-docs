@@ -31,20 +31,24 @@ The registration needs a Google user with **Admin** access on the Merchant Cente
 
 ## Behaviour worth knowing
 
-- **Which account is checked.** On AdLoop Cloud, `get_merchant_feed_health` uses the Merchant Center account selected for the workspace or the client, so your AI doesn't need the ID. Self-hosted, set `merchant.account_id` in the [configuration](/self-hosting/configuration) to get the same default. An `account_id` passed in the call always wins; your AI finds the IDs with `list_merchant_accounts`.
+- **Which account is checked.** On AdLoop Cloud, the Merchant Center tools use the Merchant Center account selected for the workspace or the client, so your AI doesn't need the ID. Self-hosted, set `merchant.account_id` in the [configuration](/self-hosting/configuration) to get the same default. An `account_id` passed in the call always wins; your AI finds the IDs with `list_merchant_accounts`.
 - **What comes back:** approved, pending and disapproved counts per reporting context (Shopping ads, free listings, …) and country; the top product issues ranked by affected products, each with Google's documentation link; account-level issues with their severity. `CRITICAL` means offers stop serving entirely.
+- **Product by product:** `get_merchant_product_issues` names the products behind those counts: disapproved (the default), limited or pending ones, each with its offer id, title and click potential, and every issue with the attribute it concerns, the countries affected and whether you have to act or Google is still reviewing. Products with high click potential come first, because fixing them brings back the most traffic. Filter by an issue code to get, say, every product that lacks a GTIN.
 - **Product status lags about 30 minutes.** A feed fix you just made won't show yet.
 
 ## Tools
 
 - `list_merchant_accounts`: the Merchant Center accounts your Google account can access
 - `get_merchant_feed_health`: product status totals, top issues and account issues for one account
+- `get_merchant_product_issues`: the individual products with issues, and their issues
+
+For spend and conversions per product, see `get_shopping_product_performance` under [Google Ads](/integrations/google-ads#shopping-and-performance-max).
 
 Parameters are in the [tool reference](/reference/tools#merchant-center-merchant); the toolset slug is `merchant` ([toolsets](/concepts/toolsets)).
 
 ## Limits
 
-- Aggregates only: AdLoop doesn't list individual products and can't edit products, the feed or account settings.
+- Read-only: AdLoop can't edit products, the feed or account settings. Product issues list up to 1,000 matching products per call; narrow by issue code for larger feeds.
 - On AdLoop Cloud, Merchant Center calls are unmetered on every plan; see [plans and limits](/cloud/plans-and-limits).
 - On a solo plan or a client-scoped key, calls for an account other than the selected one are refused.
 

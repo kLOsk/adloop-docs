@@ -84,6 +84,8 @@ The full list with parameters is in the [tool reference](/reference/tools#google
 - **Product exclusions:** `draft_pmax_product_exclusions` takes the complete list of item ids, brands or custom label values to exclude from a retail asset group. Asset groups with nested product filters are left to the Google Ads interface.
 - **Status:** `pause_entity` and `enable_entity` take `asset_group`.
 
+**Product performance.** `get_shopping_product_performance` sums spend, clicks, conversions, CPA and ROAS per product across Shopping and Performance Max campaigns, and lists the products that spent without converting. Check those for price, stock and landing page before taking them out with `draft_pmax_product_exclusions` or a lower product bid. Which products the feed itself blocks comes from [`get_merchant_product_issues`](/integrations/merchant-center).
+
 ## Audiences
 
 `get_audience_lists` shows the account's remarketing and customer lists (size for Search and Display, open or closed), custom segments and combined segments; `search_audience_segments` finds Google's in-market and affinity segments by name. `get_audience_targeting` shows what a campaign or ad group has attached and its audience mode.
