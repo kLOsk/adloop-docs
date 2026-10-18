@@ -108,7 +108,7 @@ On AdLoop Cloud, every Google Ads tool call counts toward your workspace's daily
 
 ## What AdLoop stores
 
-On AdLoop Cloud: an encrypted refresh token, your Google email address, the permissions you granted, and the selected Ads account (ID, name, currency, and the manager account it is reached through). Campaign and performance data pass through and are never stored; the change log records what was changed. Self-hosted, the token stays in `~/.adloop/token.json` and the audit log in `~/.adloop/audit.log` on your machine. See the [privacy policy](https://getadloop.com/privacy) for the full description.
+On AdLoop Cloud: an encrypted refresh token, your Google email address, the permissions you granted, and the selected Ads account (ID, name, currency, and the manager account it is reached through). Campaign and performance data pass through and are never stored; the change log records what was changed. Files you upload are the exception: they are kept encrypted for as short as the upload needs (images 24 hours, conversion CSVs until a draft has read them, two hours at most). Self-hosted, the token stays in `~/.adloop/token.json` and the audit log in `~/.adloop/audit.log` on your machine. See the [privacy policy](https://getadloop.com/privacy) for the full description.
 
 ## Uploading images
 
@@ -119,3 +119,12 @@ An image on your computer, or one you attached in the chat, has no public URL, a
 - **Self-hosted:** the card works in apps that show it; otherwise pass local files directly with `image_paths`.
 
 The AI then creates the assets from the upload ids (`draft_image_assets` with `upload_ids`), with the usual preview and approval. On AdLoop Cloud, uploads also work for Reddit image and carousel ads. Uploads are deleted 24 hours after the upload.
+
+## Offline conversion uploads
+
+Calls and leads that turned into customers offline can go back to Google Ads from a CSV in Google's upload template: `draft_upload_call_conversions` matches calls by the caller's phone number, `draft_upload_enhanced_conversions_for_leads` matches leads by hashed email, phone or name and address. The conversion action named in the file must exist (type UPLOAD_CALLS or UPLOAD_CLICKS); the draft checks it, previews the rows with redacted samples, consent and skipped rows, and uploads only after approval.
+
+- **Self-hosted:** pass the file as `csv_path`, or upload it through the card (`upload_conversion_csv`) and pass its `upload_id`.
+- **AdLoop Cloud:** not available yet; it arrives with the next version of the data processing agreement, because the files hold your customers' personal data. It will work through the upload card or an upload link.
+
+The file is deleted as soon as a draft has read it, after two hours at the latest. Lead names, emails and phone numbers are hashed (SHA-256) while drafting; callers' numbers go to Google as they are, because Google matches calls by number. The change log never contains numbers, emails or names.
