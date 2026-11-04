@@ -39,7 +39,7 @@ Everything on [the safety model](/concepts/safety-model) applies. On top of that
 
 - **The dry run asks Google.** `confirm_and_apply` with `dry_run=true` sends the exact mutates to Google in validate-only mode: Google checks them and executes nothing. `DRY_RUN_FAILED` carries Google's error and means the real apply would fail the same way. Steps that depend on an object an earlier step would create (keywords for a list that does not exist yet, say) cannot be validated and are counted as skipped.
 - **Budgets and bids are capped.** `max_daily_budget` caps every budget AdLoop sets. `max_bid_increase_pct` (default 100) caps raises of an ad group's manual CPC and of an existing Maximize Clicks ceiling; a first-time ceiling has no baseline and is not capped.
-- **Broad match needs Smart Bidding.** `draft_campaign` refuses BROAD keywords on a campaign without Smart Bidding (Maximize Conversions, Maximize Conversion Value, Target CPA or Target ROAS); `draft_keywords` and `draft_ad_group` flag them in the preview.
+- **Broad match needs Smart Bidding.** `draft_campaign` refuses BROAD keywords on a campaign without Smart Bidding (Maximize Conversions, Maximize Conversion Value, Target CPA or Target ROAS); `draft_keywords` and `draft_ad_group` flag them in the preview. Campaign-level broad match (`keyword_match_type="BROAD"` on `update_campaign`) follows the same rule, checked again at apply, and needs a double confirmation: Google converts every phrase and exact keyword in the campaign to broad match, and turning the setting off later does not restore them. Moving a broad match campaign off Smart Bidding is refused unless the same call turns broad match off.
 - **Targeting is mandatory.** New campaigns need geo and language targets.
 - **Landing pages must load.** Final URLs of ads and sitelinks are fetched at draft time; an error page blocks the draft. If the site is only rate-limiting or briefly down, the preview warns and lets you proceed.
 - **What is created paused.** Campaigns and responsive search ads are created PAUSED. New ad groups are created enabled but cannot serve until one of their ads is enabled.
@@ -54,7 +54,7 @@ Reads: `list_accounts`, `get_campaign_performance` (with search impression share
 
 Writes (all previewed):
 
-- **Structure:** `draft_campaign`, `draft_shopping_campaign` (Standard Shopping for a linked Merchant Center feed), `draft_ad_group`, `update_campaign` (bidding, budget, locations, languages, networks, Maximize Clicks CPC ceiling), `update_ad_group` (name, manual CPC bid).
+- **Structure:** `draft_campaign`, `draft_shopping_campaign` (Standard Shopping for a linked Merchant Center feed), `draft_ad_group`, `update_campaign` (bidding, budget, locations, languages, location options, URL options, campaign-level broad match, networks, Maximize Clicks CPC ceiling), `update_ad_group` (name, manual CPC bid).
 - **Ads:** `draft_responsive_search_ad`, `update_responsive_search_ad`.
 - **Keywords and exclusions:** `draft_keywords`, `add_negative_keywords`, `add_negative_locations`, `draft_demographic_targeting` (age, gender, parental status, income; exclusions by default).
 - **Shared negative keyword lists:** `propose_negative_keyword_list` (create and attach), `add_to_negative_keyword_list`, `attach_shared_set_to_campaigns`, `detach_shared_set_from_campaigns`.
