@@ -129,6 +129,7 @@ Google Analytics reads and key events.
 | `draft_ga4_annotation` | Destructive | Draft creating, changing or deleting a GA4 annotation (a note on a date or date range in GA4's charts), returning a PREVIEW. |
 | `draft_ga4_custom_dimension` | Destructive | Draft registering, changing or archiving a GA4 custom dimension, returning a PREVIEW. |
 | `draft_ga4_custom_metric` | Destructive | Draft registering, changing or archiving a GA4 custom metric, returning a PREVIEW. |
+| `draft_ga4_data_retention` | Destructive | Draft a change to how long GA4 keeps event- and user-level data, returning a PREVIEW. |
 | `draft_key_event` | Write | Draft marking a GA4 event as a key event (conversion), or changing an existing one — returns a PREVIEW. |
 | `get_account_summaries` | Read | List all GA4 accounts and properties accessible by the authenticated user. |
 | `get_ga4_property` | Read | Show a GA4 property's configuration in one call: details, linked Google Ads accounts, data streams and data retention. |
@@ -152,6 +153,7 @@ Cross-channel attribution and tracking code.
 | `analyze_campaign_conversions` | Read | Campaign clicks → GA4 conversions mapping — the real cost-per-conversion. |
 | `attribution_check` | Read | Compare Ads-reported conversions vs GA4 — find tracking discrepancies. |
 | `check_key_event_imports` | Read | Check that every GA4 key event reaches Google Ads: imported, used for bidding, and actually receiving conversions. |
+| `draft_conversion_tracking_setup` | Write | Set up conversion tracking from GA4 into Google Ads in one approved plan, returning a PREVIEW of only the missing steps. |
 | `generate_tracking_code` | Read | Generate a GA4 event tracking JavaScript snippet. |
 | `landing_page_analysis` | Read | Analyze which landing pages convert and which don't. |
 | `validate_tracking` | Read | Compare tracking events found in the codebase against actual GA4 data. |

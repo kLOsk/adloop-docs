@@ -1,9 +1,9 @@
 ---
 title: "Google Analytics"
-description: "GA4 reports, funnels, attribution, the property setup, key events, annotations and custom definitions, next to your ad data."
+description: "GA4 reports, funnels, attribution, the property setup, key events, annotations, custom definitions and data retention, and conversion tracking into Google Ads in one step."
 ---
 
-AdLoop reads your GA4 property: custom reports with any dimensions and metrics, realtime data, funnels, model-based attribution, the property's configuration and the events it receives. It can also change the property's key events, annotations and custom dimensions and metrics, each through the same preview → `confirm_and_apply` gate as every other write. Combined with [Google Ads](/integrations/google-ads), it answers the questions neither tool answers alone: real cost per conversion, landing pages that get paid traffic but do not convert, and whether conversions reach Google Ads at all.
+AdLoop reads your GA4 property: custom reports with any dimensions and metrics, realtime data, funnels, model-based attribution, the property's configuration and the events it receives. It can also change the property's key events, annotations, custom dimensions and metrics and data retention, and set up conversion tracking into Google Ads in one step, each through the same preview → `confirm_and_apply` gate as every other write. Combined with [Google Ads](/integrations/google-ads), it answers the questions neither tool answers alone: real cost per conversion, landing pages that get paid traffic but do not convert, and whether conversions reach Google Ads at all.
 
 Analytics shares one Google connection with Google Ads, Tag Manager, Search Console and Merchant Center.
 
@@ -13,7 +13,7 @@ How this compares with Google's own Analytics MCP server: [Google Analytics MCP,
 
 <Tabs>
   <Tab title="AdLoop Cloud">
-    The onboarding wizard (later: **Settings → Google → Connect Google account**) asks which Google products your AI may use. Keep **Google Analytics (GA4)** ticked; Google's consent dialog then asks to view your Analytics data and to manage your Analytics settings. The manage permission is only used by the write tools below (key events, annotations, custom dimensions and metrics), each applied after your approval; Google has no narrower permission for them.
+    The onboarding wizard (later: **Settings → Google → Connect Google account**) asks which Google products your AI may use. Keep **Google Analytics (GA4)** ticked; Google's consent dialog then asks to view your Analytics data and to manage your Analytics settings. The manage permission is only used by the write tools below (key events, annotations, custom dimensions and metrics, data retention, and the link to Google Ads), each applied after your approval; Google has no narrower permission for them.
 
     Then pick the property. **I do not use Google Analytics** switches the Analytics tools off; a workspace needs at least one of Google Ads or Analytics, so an Analytics-only workspace works too. Agencies pick a property per client under **Settings → Clients** (see [Clients](/cloud/clients)).
 
@@ -58,7 +58,7 @@ Both use Google's Data API v1alpha, the same endpoints GA4's explorations and ad
 - enhanced measurement per web stream, and Google signals with the thresholding they cause;
 - custom dimension and metric slots nearly used up.
 
-Whether Google Ads actually receives the key events is `check_key_event_imports` in the [tracking audit](/integrations/tracking-audit): it reads Google Ads too.
+Whether Google Ads actually receives the key events is `check_key_event_imports` in the [tracking audit](/integrations/tracking-audit): it reads Google Ads too. What the checks find is fixed with the tools under [Changes](#changes): two-month retention with `draft_ga4_data_retention`, a missing Ads link or import with `draft_conversion_tracking_setup`.
 
 ## Changes
 
@@ -68,7 +68,21 @@ All of them are previewed and applied with `confirm_and_apply` or on the [approv
 - **Annotations.** `draft_ga4_annotation` creates, changes or deletes a note on a date or date range (`list_ga4_annotations` lists them). Annotations Google created itself cannot be changed.
 - **Custom dimensions and metrics.** `draft_ga4_custom_dimension` registers an event parameter, user property or ecommerce item parameter as a dimension; `draft_ga4_custom_metric` a numeric event parameter as a metric. Both rename and archive too. The draft refuses a parameter that is already registered, a taken display name and a property without free slots (`list_ga4_custom_definitions` shows them). GA4 fills a new definition only from the moment it exists, and its parameter name and scope cannot change later; the preview says both. Archiving cannot be undone and asks for a double confirmation.
 
-Your Google user needs edit access to the property (Marketer or Editor for key events, Editor for custom definitions).
+- **Data retention.** `draft_ga4_data_retention` sets how long GA4 keeps event- and user-level data: 2 or 14 months on a standard property, up to 50 on GA4 360. It limits explorations, funnels and other user-level reports; standard reports are aggregated and not affected. Longer retention only helps from now on. Shorter retention makes GA4 delete the older data, so it asks for a double confirmation. If your privacy policy names how long Analytics data is kept, update it with the setting.
+
+Your Google user needs edit access to the property (Marketer or Editor for key events, Editor for custom definitions and data retention).
+
+### Conversion tracking into Google Ads, in one step
+
+For Google Ads to bid on a GA4 conversion, six things have to be right in two products: the property linked to the Ads account, the event marked as a key event, auto-tagging on in Google Ads, the conversion imported (Google Ads creates a hidden conversion action per key event when you link, and it records nothing until imported), the import set to primary, and its goal used for bidding. `draft_conversion_tracking_setup` reads all of them and plans only what is missing, on one approval card. Ask your AI to "set up conversion tracking for sign_up", or let it offer the tool after `check_key_event_imports` finds a gap.
+
+- Without `events`, it takes the key events that fired in the last 28 days. Events that never fired are left out and named, because the website has to send them first ([tracking code](/integrations/tracking-audit)).
+- Imports are primary by default; `primary=false` imports them as secondary conversions (reported, not bid on).
+- A new link keeps personalized advertising off, so GA4 shares no audiences or remarketing data with Google Ads, unless you ask for it (`ads_personalization`). Linking needs Editor on the property and admin access to the Ads account.
+- Google Ads creates the conversion action for a newly linked property or a new key event by itself, but not instantly. The preview lists those events under "After this"; running the setup again later imports them.
+- `data_retention=14` lengthens retention in the same plan.
+
+The dry run sends the Google Ads steps to Google in validate-only mode and re-reads the GA4 ones. Each step checks its target again before acting and skips itself when it is already done, so if one step fails, the error names it and confirming the same plan again continues from there.
 
 ### Annotations for ad changes
 
@@ -78,13 +92,13 @@ When AdLoop applies a change that moves traffic, such as a budget, bidding, targ
 
 Reads: `get_account_summaries` (accounts and properties you can reach), `get_ga4_property`, `audit_ga4_property`, `run_ga4_report`, `run_realtime_report`, `run_ga4_funnel`, `run_ga4_attribution`, `get_tracking_events` (every event the property received, with counts), `list_key_events`, `list_ga4_dimensions_and_metrics`, `list_ga4_annotations`, `list_ga4_custom_definitions`.
 
-Writes (previewed): `draft_key_event`, `draft_delete_key_event`, `draft_ga4_annotation`, `draft_ga4_custom_dimension`, `draft_ga4_custom_metric`.
+Writes (previewed): `draft_key_event`, `draft_delete_key_event`, `draft_ga4_annotation`, `draft_ga4_custom_dimension`, `draft_ga4_custom_metric`, `draft_ga4_data_retention`, and `draft_conversion_tracking_setup` (GA4 and Google Ads together).
 
-The full list with parameters is in the [tool reference](/reference/tools#google-analytics-ga4); the toolset slug is `ga4`. The tools that join Analytics with Google Ads or your codebase (`analyze_campaign_conversions`, `attribution_check`, `check_key_event_imports`, `landing_page_analysis`, `validate_tracking`, `generate_tracking_code`) are in the `tracking` toolset, and the three-way audit across your code, Tag Manager and GA4 (`audit_event_coverage`) is in `gtm`. How they fit together is on [Tracking audit](/integrations/tracking-audit).
+The full list with parameters is in the [tool reference](/reference/tools#google-analytics-ga4); the toolset slug is `ga4`. The tools that join Analytics with Google Ads or your codebase (`analyze_campaign_conversions`, `attribution_check`, `check_key_event_imports`, `draft_conversion_tracking_setup`, `landing_page_analysis`, `validate_tracking`, `generate_tracking_code`) are in the `tracking` toolset, and the three-way audit across your code, Tag Manager and GA4 (`audit_event_coverage`) is in `gtm`. How they fit together is on [Tracking audit](/integrations/tracking-audit).
 
 ## Operations and limits
 
-On AdLoop Cloud, every Analytics tool, writes included, is unmetered and does not count toward your operations. The `tracking` tools that also read Google Ads do count. See [plans and limits](/cloud/plans-and-limits). Google's own GA4 API quotas apply on every setup.
+On AdLoop Cloud, every Analytics tool, writes included, is unmetered and does not count toward your operations. The `tracking` tools that also read or change Google Ads do count, `draft_conversion_tracking_setup` included. See [plans and limits](/cloud/plans-and-limits). Google's own GA4 API quotas apply on every setup.
 
 ## What AdLoop stores
 
