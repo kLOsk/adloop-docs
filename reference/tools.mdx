@@ -124,12 +124,21 @@ Google Analytics reads and key events.
 
 | Tool | Type | What it does |
 |------|------|--------------|
+| `audit_ga4_property` | Read | Audit a GA4 property's setup in one call: the settings that quietly cost data or conversions. |
 | `draft_delete_key_event` | Destructive | Draft removing a GA4 key event so the event no longer counts as a conversion, returning a PREVIEW. |
-| `draft_key_event` | Write | Draft marking a GA4 event as a key event (conversion) — returns a PREVIEW. |
+| `draft_ga4_annotation` | Destructive | Draft creating, changing or deleting a GA4 annotation (a note on a date or date range in GA4's charts), returning a PREVIEW. |
+| `draft_ga4_custom_dimension` | Destructive | Draft registering, changing or archiving a GA4 custom dimension, returning a PREVIEW. |
+| `draft_ga4_custom_metric` | Destructive | Draft registering, changing or archiving a GA4 custom metric, returning a PREVIEW. |
+| `draft_key_event` | Write | Draft marking a GA4 event as a key event (conversion), or changing an existing one — returns a PREVIEW. |
 | `get_account_summaries` | Read | List all GA4 accounts and properties accessible by the authenticated user. |
+| `get_ga4_property` | Read | Show a GA4 property's configuration in one call: details, linked Google Ads accounts, data streams and data retention. |
 | `get_tracking_events` | Read | List all GA4 events and their volume for the given date range. |
+| `list_ga4_annotations` | Read | List a GA4 property's annotations, the notes GA4 shows on a date or date range in its charts. |
+| `list_ga4_custom_definitions` | Read | List a GA4 property's custom dimensions and custom metrics, with how many slots are left. |
 | `list_ga4_dimensions_and_metrics` | Read | List the dimensions and metrics a GA4 property can report on, including custom ones. |
 | `list_key_events` | Read | List the key events (conversions) configured on a GA4 property. |
+| `run_ga4_attribution` | Read | Show which channels, campaigns or sources get the credit for conversions under GA4's attribution models, or compare data-driven with last click. |
+| `run_ga4_funnel` | Read | Run a GA4 funnel report: how many users go from one step to the next, and where they drop off. |
 | `run_ga4_report` | Read | Run a custom GA4 report with optional filters, ordering, paging and a comparison period. |
 | `run_realtime_report` | Read | Run a GA4 realtime report showing current active users and events. |
 
@@ -142,6 +151,7 @@ Cross-channel attribution and tracking code.
 |------|------|--------------|
 | `analyze_campaign_conversions` | Read | Campaign clicks → GA4 conversions mapping — the real cost-per-conversion. |
 | `attribution_check` | Read | Compare Ads-reported conversions vs GA4 — find tracking discrepancies. |
+| `check_key_event_imports` | Read | Check that every GA4 key event reaches Google Ads: imported, used for bidding, and actually receiving conversions. |
 | `generate_tracking_code` | Read | Generate a GA4 event tracking JavaScript snippet. |
 | `landing_page_analysis` | Read | Analyze which landing pages convert and which don't. |
 | `validate_tracking` | Read | Compare tracking events found in the codebase against actual GA4 data. |

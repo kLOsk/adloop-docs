@@ -15,8 +15,9 @@ AdLoop never reads your files, on AdLoop Cloud or self-hosted. Your AI client (C
 
 1. **Rule out consent first.** In the EU, Ads usually shows several times more clicks than GA4 shows sessions because many visitors decline analytics cookies. That's normal, not broken tracking; see [consent and data gaps](/concepts/consent-and-data).
 2. **Is anything missing?** `attribution_check` compares the conversions Google Ads reports with what GA4 records, optionally for named events such as `sign_up` or `purchase`, and says whether a gap is explained by consent.
-3. **Code against GA4.** `validate_tracking` takes the event names from your code and returns which ones GA4 receives, which are missing, which arrive without a code reference, and which GA4 collects automatically. It looks at the last 28 days by default.
-4. **Code against GTM against GA4.** `audit_event_coverage` adds the live Tag Manager container and gives every event a status:
+3. **Do your key events reach Google Ads?** `check_key_event_imports` matches every GA4 key event with the Google Ads conversion actions that import it. It names key events nothing imports, imports used only as secondary conversions (reported, not bid on), imports that receive nothing while GA4 counts conversions from Google Ads traffic (a broken link or auto-tagging), and imports of events that are no longer key events. For the GA4 side alone, `audit_ga4_property` checks the property's setup: retention, streams that stopped sending, key events that never fire.
+4. **Code against GA4.** `validate_tracking` takes the event names from your code and returns which ones GA4 receives, which are missing, which arrive without a code reference, and which GA4 collects automatically. It looks at the last 28 days by default.
+5. **Code against GTM against GA4.** `audit_event_coverage` adds the live Tag Manager container and gives every event a status:
 
    | Status | Meaning |
    |---|---|
@@ -32,7 +33,7 @@ AdLoop never reads your files, on AdLoop Cloud or self-hosted. Your AI client (C
    | `auto_event_only` | An automatic GA4 event your code doesn't reference |
 
    Your AI drills into flagged tags and triggers with the [Tag Manager tools](/integrations/tag-manager#tools).
-5. **Fix it.** `generate_tracking_code` writes a ready-to-paste gtag snippet, with Google's recommended parameters for standard events and an optional form-submit, button-click or page-load listener, and checks whether the event already arrives in GA4. If an event arrives but isn't a key event, `draft_key_event` marks it as one, through the usual [preview and confirmation](/concepts/safety-model).
+6. **Fix it.** `generate_tracking_code` writes a ready-to-paste gtag snippet, with Google's recommended parameters for standard events and an optional form-submit, button-click or page-load listener, and checks whether the event already arrives in GA4. If an event arrives but isn't a key event, `draft_key_event` marks it as one, through the usual [preview and confirmation](/concepts/safety-model).
 
 ## Paid traffic against GA4
 
@@ -43,7 +44,7 @@ For "what do my ads really achieve?":
 
 ## Tools
 
-- `attribution_check`, `analyze_campaign_conversions`, `landing_page_analysis`: Google Ads ↔ GA4 cross-checks
+- `attribution_check`, `check_key_event_imports`, `analyze_campaign_conversions`, `landing_page_analysis`: Google Ads ↔ GA4 cross-checks
 - `validate_tracking`: your code's events ↔ GA4
 - `generate_tracking_code`: gtag snippets
 - `audit_event_coverage`: your code's events ↔ live GTM container ↔ GA4
@@ -54,7 +55,7 @@ All of them only read. They sit in the `tracking` toolset, except `audit_event_c
 
 - Tag Manager tags with a dynamic event name (`{{Event}}`) and Custom HTML tags can't be interpreted automatically; the audit lists them for a manual look.
 - The audit compares the **published** container. Unpublished edits show up in `get_gtm_workspace_diff`.
-- On AdLoop Cloud, `analyze_campaign_conversions`, `landing_page_analysis` and `attribution_check` query Google Ads and count as Google Ads operations. The other tracking tools are unmetered. See [plans and limits](/cloud/plans-and-limits).
+- On AdLoop Cloud, `analyze_campaign_conversions`, `landing_page_analysis`, `attribution_check` and `check_key_event_imports` query Google Ads and count as Google Ads operations. The other tracking tools are unmetered. See [plans and limits](/cloud/plans-and-limits).
 
 ## What AdLoop stores
 

@@ -1,9 +1,9 @@
 ---
 title: "Google Analytics"
-description: "GA4 reports, realtime checks and key events, next to your ad data."
+description: "GA4 reports, funnels, attribution, the property setup, key events, annotations and custom definitions, next to your ad data."
 ---
 
-AdLoop reads your GA4 property: custom reports with any dimensions and metrics, realtime data, and the events the property receives. It can also mark an event as a key event, through the same preview → `confirm_and_apply` gate as every other write. Combined with [Google Ads](/integrations/google-ads), it answers the questions neither tool answers alone: real cost per conversion, landing pages that get paid traffic but do not convert, and whether conversions are tracked at all.
+AdLoop reads your GA4 property: custom reports with any dimensions and metrics, realtime data, funnels, model-based attribution, the property's configuration and the events it receives. It can also change the property's key events, annotations and custom dimensions and metrics, each through the same preview → `confirm_and_apply` gate as every other write. Combined with [Google Ads](/integrations/google-ads), it answers the questions neither tool answers alone: real cost per conversion, landing pages that get paid traffic but do not convert, and whether conversions reach Google Ads at all.
 
 Analytics shares one Google connection with Google Ads, Tag Manager, Search Console and Merchant Center.
 
@@ -11,11 +11,11 @@ Analytics shares one Google connection with Google Ads, Tag Manager, Search Cons
 
 <Tabs>
   <Tab title="AdLoop Cloud">
-    The onboarding wizard (later: **Settings → Google → Connect Google account**) asks which Google products your AI may use. Keep **Google Analytics (GA4)** ticked; Google's consent dialog then asks to view your Analytics data and to manage your Analytics settings. The edit permission is only used by `draft_key_event`; Google has no narrower permission for it.
+    The onboarding wizard (later: **Settings → Google → Connect Google account**) asks which Google products your AI may use. Keep **Google Analytics (GA4)** ticked; Google's consent dialog then asks to view your Analytics data and to manage your Analytics settings. The manage permission is only used by the write tools below (key events, annotations, custom dimensions and metrics), each applied after your approval; Google has no narrower permission for them.
 
-    Then pick the property. **I do not use Google Analytics** switches the Analytics tools off; a workspace needs at least one of Google Ads or Analytics. Agencies pick a property per client under **Settings → Clients** (see [Clients](/cloud/clients)).
+    Then pick the property. **I do not use Google Analytics** switches the Analytics tools off; a workspace needs at least one of Google Ads or Analytics, so an Analytics-only workspace works too. Agencies pick a property per client under **Settings → Clients** (see [Clients](/cloud/clients)).
 
-    If you untick the edit permission in Google's dialog, reports keep working and only key events are unavailable; the dashboard shows the missing permission, and reconnecting restores it with all settings kept.
+    If you untick the manage permission in Google's dialog, reports keep working and only the write tools are unavailable; the dashboard shows the missing permission, and reconnecting restores it with all settings kept.
   </Tab>
   <Tab title="Self-hosted">
     Enable the **Google Analytics Data API** and the **Google Analytics Admin API** in your Cloud project (see [Google Cloud project setup](/self-hosting/google-cloud-project)). `adloop init` signs you in, finds your properties and stores the default as `ga4.property_id`; every Analytics tool also takes a `property_id` argument for another property.
@@ -24,34 +24,65 @@ Analytics shares one Google connection with Google Ads, Tag Manager, Search Cons
   </Tab>
 </Tabs>
 
-## Behaviour worth knowing
+## Reports
 
-- **GA4's own names.** `run_ga4_report` takes dimensions and metrics by their GA4 API names (`sessionSource`, `pagePath`, `deviceCategory`, `sessions`, `totalUsers`, `eventCount`, …). Dates are `today`, `yesterday`, `7daysAgo`, `28daysAgo` or `YYYY-MM-DD`; without a range the report covers the last seven days.
+- **GA4's own names.** `run_ga4_report` takes dimensions and metrics by their GA4 API names (`sessionSource`, `pagePath`, `deviceCategory`, `sessions`, `totalUsers`, `keyEvents`, …). `list_ga4_dimensions_and_metrics` lists every name the property offers, custom ones included. Dates are `today`, `yesterday`, `NdaysAgo` or `YYYY-MM-DD`; without a range the report covers the last seven days.
+- **Filters with OR.** Conditions in `dimension_filter` and `metric_filter` must all hold; a group `{"any_of": [...]}` matches when any of its conditions holds, `{"all_of": [...]}` when all do, and both take `"not": true`.
+- **Several periods at once.** `compare_start`/`compare_end` adds a comparison period; `date_ranges` takes up to four named periods, for example October this year and last year. Rows then carry the period's name.
+- **Numbers you can trust, or a note why not.** GA4 thresholds rows with few users (usually because of Google signals), samples large reports, and groups rows into "(other)" at its row limits. Each of these makes a report differ from the GA4 interface, and `insights[]` says when it happened. It also warns when the property is close to its daily API quota.
+- **Annotations in context.** Reports over time (a date dimension) or comparing periods return the property's annotations within those dates, so a jump in the rows comes with the note someone left that day.
 - **Row limits are visible.** A report returns 100 rows unless you raise `limit`, and `total_row_count` tells you how many exist.
-- **Realtime for deploys.** `run_realtime_report` shows active users and events right now: the quick way to confirm a new event fires after you ship tracking code.
-- **The event inventory.** `get_tracking_events` lists every event name the property received with its count, over the last 28 days by default.
+- **Realtime for deploys.** `run_realtime_report` shows active users and events right now, filtered (for example on the event you just shipped), sorted, and for up to two minute windows such as the last five minutes against the 25 before.
 - **Fewer sessions than ad clicks is normal.** GA4 only sees visitors who accepted analytics cookies, while Google Ads counts every click. In EU traffic a ratio of two to five clicks per session is common and not a tracking fault. The `tracking` tools (`analyze_campaign_conversions`, `attribution_check`, `landing_page_analysis`) take this into account. Background in [Consent and data gaps](/concepts/consent-and-data).
 
-## Key events
+## Funnels and attribution
 
-When an event fires but is not counted as a conversion, `draft_key_event` marks it as a key event. The counting method is `ONCE_PER_EVENT` (purchases) or `ONCE_PER_SESSION` (sign-ups). Two things the preview also tells you:
+`run_ga4_funnel` measures how many users get from one step to the next. Steps are event names exactly as they fire, or pages (`{"page": "/checkout"}` matches page views whose URL contains the text), optionally "directly followed" or "within N minutes" of the previous step. The result lists users, completion and abandonment per step, the overall completion rate and the biggest drop. `breakdown` splits every step by a dimension such as device or channel, `next_action` shows what users did next instead of continuing. A closed funnel (the default) counts only users who start at step 1.
 
-- It applies to future data only; past events are not reclassified.
-- For Google Ads to optimise on it, the property must be linked to the Ads account and the key event imported there as a conversion.
+`run_ga4_attribution` is GA4's model-based view of conversions: conversions, revenue, ad cost and ROAS by channel, campaign, source, country or device, attributed by data-driven or last-click attribution rather than by session. `COMPARE` runs both models and shows each row's share of the credit under both, with the channels that gain or lose most named in `insights[]`. Conversions can be named by key event (`["purchase"]`). Ad cost and ROAS need Google Ads linked to the property.
 
-Your Google user needs edit access to the property. The dry run of a key-event plan does not contact Google, so the real apply is the first point where Google checks it.
+Both use Google's Data API v1alpha, the same endpoints GA4's explorations and advertising reports use. Google is still rolling the attribution report out; a property without it gets an explanation and a fallback (`run_ga4_report` with `keyEvents` by channel) instead of an error.
+
+## Property setup
+
+`get_ga4_property` returns the property's configuration in one call: time zone, currency, standard or 360, the linked Google Ads accounts, the data streams with their measurement IDs, data retention and the number of key events.
+
+`audit_ga4_property` checks the settings that quietly cost data and returns them as warnings, notes and passes:
+
+- data retention left at GA4's two-month default, which cuts explorations and funnels short;
+- no Google Ads link, or the Ads account AdLoop works with not being the linked one;
+- data streams that sent nothing in the last seven days;
+- key events that never fired in 28 days, or no key events at all;
+- enhanced measurement per web stream, and Google signals with the thresholding they cause;
+- custom dimension and metric slots nearly used up.
+
+Whether Google Ads actually receives the key events is `check_key_event_imports` in the [tracking audit](/integrations/tracking-audit): it reads Google Ads too.
+
+## Changes
+
+All of them are previewed and applied with `confirm_and_apply` or on the [approval card](/concepts/safety-model#approval-cards-only-your-click-applies). The Admin API has no validate-only mode, so the dry run re-reads what the plan changes instead: a create checks for duplicates and the property's limits again, an update, delete or archive checks that nobody changed the item in GA4 since the preview. Either way a failed check stops the apply.
+
+- **Key events.** `draft_key_event` marks an event as a key event, with counting method `ONCE_PER_EVENT` (purchases) or `ONCE_PER_SESSION` (sign-ups) and an optional default value (a lead worth 20 EUR). For an event that already is one, it changes the counting method or value instead and the preview shows before and after. `draft_delete_key_event` stops an event counting as a conversion; the event keeps firing. Both apply to future data only, and for Google Ads to optimise on a key event the property must be linked and the conversion imported.
+- **Annotations.** `draft_ga4_annotation` creates, changes or deletes a note on a date or date range (`list_ga4_annotations` lists them). Annotations Google created itself cannot be changed.
+- **Custom dimensions and metrics.** `draft_ga4_custom_dimension` registers an event parameter, user property or ecommerce item parameter as a dimension; `draft_ga4_custom_metric` a numeric event parameter as a metric. Both rename and archive too. The draft refuses a parameter that is already registered, a taken display name and a property without free slots (`list_ga4_custom_definitions` shows them). GA4 fills a new definition only from the moment it exists, and its parameter name and scope cannot change later; the preview says both. Archiving cannot be undone and asks for a double confirmation.
+
+Your Google user needs edit access to the property (Marketer or Editor for key events, Editor for custom definitions).
+
+### Annotations for ad changes
+
+When AdLoop applies a change that moves traffic, such as a budget, bidding, targeting or status change in Google Ads or Reddit Ads, the result carries a ready annotation for GA4 (`suggested_annotation`: title, date, description), and the approval card mentions it in its chat message. Your AI offers to add it; writing it to GA4 is a separate change you approve, because the property may be a client's. Later, the jump in the GA4 charts has its explanation.
 
 ## Tools
 
-Reads: `get_account_summaries` (accounts and properties you can reach), `run_ga4_report` (with filters, ordering, paging and a comparison period), `run_realtime_report`, `get_tracking_events`, `list_key_events` (which events count as key events), `list_ga4_dimensions_and_metrics` (every field the property offers, custom ones included).
+Reads: `get_account_summaries` (accounts and properties you can reach), `get_ga4_property`, `audit_ga4_property`, `run_ga4_report`, `run_realtime_report`, `run_ga4_funnel`, `run_ga4_attribution`, `get_tracking_events` (every event the property received, with counts), `list_key_events`, `list_ga4_dimensions_and_metrics`, `list_ga4_annotations`, `list_ga4_custom_definitions`.
 
-Writes (previewed): `draft_key_event` (mark an event as a key event), `draft_delete_key_event` (stop counting it; the event keeps firing).
+Writes (previewed): `draft_key_event`, `draft_delete_key_event`, `draft_ga4_annotation`, `draft_ga4_custom_dimension`, `draft_ga4_custom_metric`.
 
-The full list with parameters is in the [tool reference](/reference/tools#google-analytics-ga4); the toolset slug is `ga4`. The tools that join Analytics with Google Ads or your codebase (`analyze_campaign_conversions`, `attribution_check`, `landing_page_analysis`, `validate_tracking`, `generate_tracking_code`) are in the `tracking` toolset, and the three-way audit across your code, Tag Manager and GA4 (`audit_event_coverage`) is in `gtm`. How they fit together is on [Tracking audit](/integrations/tracking-audit).
+The full list with parameters is in the [tool reference](/reference/tools#google-analytics-ga4); the toolset slug is `ga4`. The tools that join Analytics with Google Ads or your codebase (`analyze_campaign_conversions`, `attribution_check`, `check_key_event_imports`, `landing_page_analysis`, `validate_tracking`, `generate_tracking_code`) are in the `tracking` toolset, and the three-way audit across your code, Tag Manager and GA4 (`audit_event_coverage`) is in `gtm`. How they fit together is on [Tracking audit](/integrations/tracking-audit).
 
 ## Operations and limits
 
-On AdLoop Cloud, Analytics tools, `draft_key_event` included, are unmetered and do not count toward your daily operations. The `tracking` tools that also read Google Ads do count. See [plans and limits](/cloud/plans-and-limits). Google's own GA4 API quotas apply on every setup.
+On AdLoop Cloud, every Analytics tool, writes included, is unmetered and does not count toward your operations. The `tracking` tools that also read Google Ads do count. See [plans and limits](/cloud/plans-and-limits). Google's own GA4 API quotas apply on every setup.
 
 ## What AdLoop stores
 
