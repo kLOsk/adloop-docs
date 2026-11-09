@@ -47,3 +47,5 @@ Pick toolsets when creating a key under **Settings → API keys**. The server th
 ```
 
 Set it in your MCP client's configuration (the `adloop init` wizard offers this and writes it into the snippets). Unset means the full catalog; unknown names fail at startup listing the valid ones.
+
+Without the variable, a platform you haven't set up stays out of the list: with no Reddit app in the config, the Reddit Ads tools are hidden (the same goes for Microsoft Advertising) and `health_check` names the setup step under `hidden_toolsets`. Set the platform up and restart the server to get its tools, or name it in `ADLOOP_TOOLSETS` to show them anyway. Google's toolsets are always listed, since Google can sign in through Application Default Credentials with nothing in the config.
