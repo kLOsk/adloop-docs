@@ -244,3 +244,48 @@ Reddit Ads reads, writes, and planning.
 | `update_reddit_ad` | Write | Draft changes to a Reddit ad — name, landing URL (click_url), comments on/off. |
 | `update_reddit_ad_group` | Write | Draft changes to a Reddit ad group — budget, bid, run dates, weekly schedule, targeting. |
 | `update_reddit_campaign` | Write | Draft changes to a Reddit campaign — name, run dates, spend cap, and (CBO only) budget/bid/schedule. |
+
+
+## Microsoft Advertising (`microsoft_ads`)
+
+Microsoft Advertising (Bing) reads and campaign management.
+
+Open-source AdLoop only for now: community-maintained, and not offered on AdLoop Cloud yet.
+
+| Tool | Type | What it does |
+|------|------|--------------|
+| `add_microsoft_negative_keywords` | Write | Draft negative keywords directly on one Microsoft Advertising campaign or ad group (preview only). |
+| `add_to_microsoft_negative_keyword_list` | Write | Draft appending negatives to an existing Microsoft Advertising negative keyword list (preview only). |
+| `attach_microsoft_negative_keyword_list` | Write | Draft attaching a shared Microsoft Advertising negative keyword list to campaigns (preview only). |
+| `detach_microsoft_negative_keyword_list` | Write | Draft detaching a shared Microsoft Advertising negative keyword list from campaigns; the list stays (preview only). |
+| `draft_microsoft_ad_group` | Write | Draft a new Microsoft Advertising ad group, optionally with keywords (preview only). |
+| `draft_microsoft_call_extension` | Write | Draft a call extension (phone number shown with the ads) for one Microsoft Advertising campaign (preview only). |
+| `draft_microsoft_callouts` | Write | Draft callouts (at most 25 characters each) for a Microsoft Advertising campaign or the account (preview only). |
+| `draft_microsoft_campaign` | Write | Draft a new Microsoft Advertising Search campaign, created PAUSED with its locations (preview only). |
+| `draft_microsoft_image_extension` | Write | Draft image extensions (photos shown with Microsoft search ads) for a campaign, an ad group or the account (preview only). |
+| `draft_microsoft_keywords` | Write | Draft adding keywords to a Microsoft Advertising ad group (preview only). |
+| `draft_microsoft_responsive_search_ad` | Write | Draft a Microsoft Advertising responsive search ad, created PAUSED (preview only). |
+| `draft_microsoft_sitelinks` | Write | Draft sitelinks for a Microsoft Advertising campaign or the account (preview only). |
+| `draft_microsoft_structured_snippet` | Write | Draft a structured snippet (a header and 3–10 values) for a Microsoft Advertising campaign or the account (preview only). |
+| `enable_microsoft_entity` | Write | Draft enabling a paused Microsoft Advertising campaign, ad group, keyword or ad (preview only). |
+| `get_microsoft_ad_extensions` | Read | List sitelinks, callouts, structured snippets, call and image extensions on Microsoft Advertising ad groups, campaigns and the account. |
+| `get_microsoft_ad_groups` | Read | List Microsoft Advertising ad groups with bid, network, language, dates and campaign status. |
+| `get_microsoft_ads` | Read | List Microsoft Advertising ads with headlines, descriptions, paths, final URLs, status and editorial review. |
+| `get_microsoft_campaigns` | Read | List Microsoft Advertising campaigns with status, daily budget, bidding, languages and location targeting. |
+| `get_microsoft_conversion_setup` | Read | Audit Microsoft Advertising conversion tracking: UET tags, conversion goals, campaign goals and conversions against clicks. |
+| `get_microsoft_keywords` | Read | List Microsoft Advertising keywords with match type, bid, status and editorial review, plus the status of their ad group and campaign. |
+| `get_microsoft_location_performance` | Read | Where Microsoft Advertising clicks and spend came from, split into people physically there and people searching about the place. |
+| `get_microsoft_negative_keywords` | Read | List Microsoft Advertising negative keywords: those directly on campaigns and the shared negative keyword lists. |
+| `get_microsoft_performance` | Read | Microsoft Advertising performance: spend, impressions, clicks, CTR, CPC, conversions, CPA, revenue, impression share. |
+| `get_microsoft_search_terms` | Read | Microsoft Advertising search terms: what people typed, the keyword and match type it matched, clicks, spend and conversions. |
+| `list_microsoft_ads_accounts` | Read | List the Microsoft Advertising (Bing) ad accounts the signed-in user can reach. |
+| `pause_microsoft_entity` | Write | Draft pausing a Microsoft Advertising campaign, ad group, keyword or ad (preview only). |
+| `propose_microsoft_negative_keyword_list` | Write | Draft a new shared Microsoft Advertising negative keyword list and attach it to campaigns (preview only). |
+| `remove_microsoft_entity` | Destructive | Draft deleting a Microsoft Advertising entity: irreversible, double confirmation (preview only). |
+| `search_microsoft_locations` | Read | Find Microsoft Advertising location ids (countries, states, metros, cities, postal codes) by name. |
+| `update_microsoft_ad_group` | Write | Draft Microsoft Advertising ad group changes: name, default bid, search network, Audience Network adjustment. |
+| `update_microsoft_campaign` | Write | Draft Microsoft Advertising campaign setting changes: name, bid strategy and targets, tracking template, final URL suffix. |
+| `update_microsoft_campaign_budget` | Write | Draft a new daily budget for a Microsoft Advertising campaign (preview only; nothing changes yet). |
+| `update_microsoft_campaign_targeting` | Write | Draft Microsoft Advertising campaign targeting: included and excluded locations, location intent, ad schedule. |
+| `update_microsoft_keyword_bids` | Write | Draft keyword bid changes in one Microsoft Advertising ad group (preview only). |
+| `update_microsoft_responsive_search_ad` | Write | Draft changes to a Microsoft Advertising responsive search ad (preview only). |

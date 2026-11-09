@@ -23,6 +23,15 @@ LABELS = {
     "web": "Web Performance",
     "merchant": "Merchant Center",
     "reddit": "Reddit Ads",
+    "microsoft_ads": "Microsoft Advertising",
+}
+
+# Toolsets that only one edition offers, said under their heading.
+EDITION_NOTES = {
+    "microsoft_ads": (
+        "Open-source AdLoop only for now: community-maintained, and not "
+        "offered on AdLoop Cloud yet."
+    ),
 }
 
 HEADER = """---
@@ -83,6 +92,8 @@ def main() -> None:
             parts.append("Included with every toolset selection.\n")
         else:
             parts.append(f"{TOOLSETS[slug]}.\n")
+            if slug in EDITION_NOTES:
+                parts.append(f"{EDITION_NOTES[slug]}\n")
         parts.append("| Tool | Type | What it does |")
         parts.append("|------|------|--------------|")
         for tool in bucket:
