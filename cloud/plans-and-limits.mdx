@@ -3,7 +3,7 @@ title: "Plans and limits"
 description: "What counts as an operation, how much each plan includes, and what happens at the limit."
 ---
 
-AdLoop Cloud measures one thing: **ad platform operations**, the calls your AI makes to Google Ads and Reddit Ads. Everything else (Analytics, Tag Manager, Search Console, Merchant Center, PageSpeed) is unmetered on every plan, including Free.
+AdLoop Cloud measures one thing: **ad platform operations**, the calls your AI makes to Google Ads, Reddit Ads and Microsoft Advertising. Everything else (Analytics, Tag Manager, Search Console, Merchant Center, PageSpeed) is unmetered on every plan, including Free.
 
 ## Plans
 
@@ -23,7 +23,7 @@ The fair-use ceilings on Pro and Agency sit far above anything a real workspace 
 
 ## What counts as an operation
 
-Every Google Ads or Reddit Ads tool call is one operation, reads and drafts alike. The two platforms count together, against the daily number and, on Free, the monthly one.
+Every Google Ads, Reddit Ads or Microsoft Advertising tool call is one operation, reads and drafts alike. All ad platforms count together, against the daily number and, on Free, the monthly one.
 
 - **`confirm_and_apply`**, and a click on the [approval card](/concepts/safety-model#approval-cards-only-your-click-applies), counts toward the platform of the plan it applies. Applying a GA4 change (a key event, an annotation, a custom dimension or metric) doesn't count.
 - **Cross-channel tools** that use Google Ads (`analyze_campaign_conversions`, `landing_page_analysis`, `attribution_check`, `check_key_event_imports`, `draft_conversion_tracking_setup`) count as Google Ads operations.
@@ -37,6 +37,6 @@ Every Google Ads or Reddit Ads tool call is one operation, reads and drafts alik
 
 The dashboard shows today's usage and, on Free, this month's, with a notice when a limit is close or reached that says when it resets. You get an email when a workspace passes 80% of a limit (once per day for the daily one, once per month for the monthly one), so the limit is never the first sign. On Free, a second email follows when the monthly allowance is used up.
 
-At a limit, Google Ads and Reddit Ads tools are refused with a message that says which limit was reached and when it resets. When the day and the month run out together, the message names the monthly limit, because that one lasts longer. Analytics, Tag Manager, Search Console, Merchant Center and PageSpeed keep working, and so do `health_check` and `list_accounts`.
+At a limit, the Google Ads, Reddit Ads and Microsoft Advertising tools are refused with a message that says which limit was reached and when it resets. When the day and the month run out together, the message names the monthly limit, because that one lasts longer. Analytics, Tag Manager, Search Console, Merchant Center and PageSpeed keep working, and so do `health_check` and `list_accounts`.
 
 The daily plan limits apply to every workspace since 15 October 2026. The monthly Free limit applies to workspaces created since 20 October 2026, and to every free workspace from 1 December 2026.

@@ -27,12 +27,7 @@ LABELS = {
 }
 
 # Toolsets that only one edition offers, said under their heading.
-EDITION_NOTES = {
-    "microsoft_ads": (
-        "Open-source AdLoop only for now: community-maintained, and not "
-        "offered on AdLoop Cloud yet."
-    ),
-}
+EDITION_NOTES: dict[str, str] = {}
 
 HEADER = """---
 title: "Tool reference"

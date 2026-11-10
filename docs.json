@@ -58,7 +58,8 @@
           "integrations/merchant-center",
           "integrations/pagespeed",
           "integrations/tracking-audit",
-          "integrations/reddit-ads"
+          "integrations/reddit-ads",
+          "integrations/microsoft-ads"
         ]
       },
       {

@@ -1,0 +1,78 @@
+---
+title: "Microsoft Advertising"
+description: "Bing, Yahoo, AOL and DuckDuckGo search ads with the same tools and the same safety model."
+---
+
+AdLoop connects Microsoft Advertising next to Google Ads and Reddit Ads: performance reports, search terms, location reports, conversion setup checks, and changes to campaigns, ad groups, keywords, ads, negatives and extensions. Every change goes through the same preview → dry run → `confirm_and_apply` gate. New campaigns and responsive search ads are created **paused**; new ad groups and keywords are created active, as in Google Ads, and the preview says so.
+
+Microsoft is a separate connection: its own sign-in, its own ad account selection. Use it next to Google or on its own.
+
+## Connect
+
+<Tabs>
+  <Tab title="AdLoop Cloud">
+    **Settings → Microsoft → Connect Microsoft account.** You sign in on Microsoft's own page with the account you use for Microsoft Advertising and allow AdLoop Cloud to manage your Microsoft Advertising accounts; AdLoop never sees your password. Then pick the ad account your AI may reach. Agencies pick a Microsoft ad account per client under **Settings → Clients**.
+
+    **Work or school accounts:** many organisations only allow new apps once an administrator approves them. If Microsoft asks for that, the settings page shows a link to send to your Microsoft administrator. After their one-time approval, everyone in the organisation can connect. Personal Microsoft accounts need no approval.
+
+    Disconnecting deletes the stored token, which ends AdLoop's access. To remove the app's approval itself, go to [your Microsoft account's app permissions](https://account.live.com/consent/Manage) (personal account) or [myapps.microsoft.com](https://myapps.microsoft.com) (work account).
+  </Tab>
+  <Tab title="Self-hosted">
+    You need a developer token, an Entra app and a one-time sign-in:
+
+    1. **Developer token:** in Microsoft Advertising open **Settings → Developer settings** (Super Admin), or [developers.ads.microsoft.com](https://developers.ads.microsoft.com/Account). New tokens work for every account.
+    2. **Entra app:** register an app in the [Microsoft Entra admin center](https://entra.microsoft.com) with **Allow public client flows** turned on, the delegated **Microsoft Advertising API Service → msads.manage** permission, and `http://localhost/callback` as a *Mobile and desktop applications* redirect URI. Entra ignores the port of localhost redirects, so the sign-in can listen on any free port.
+    3. Put both in `~/.adloop/config.yaml`:
+
+       ```yaml
+       microsoft_ads:
+         developer_token: "..."
+         client_id: "<application id of the Entra app>"
+       ```
+
+    4. Run `adloop microsoft-login` once. The browser opens; sign in with the account that has access to the ad accounts. The refresh token is stored at `~/.adloop/microsoft_token.json`. Directories with security defaults block the device-code flow (sign-in error 530035), so `adloop microsoft-login --device-code` is only a fallback.
+    5. `list_microsoft_ads_accounts` shows your manager account (`customer_id`) and ad accounts; set `customer_id` and `ad_account_id` in the config as defaults, or pass `ad_account_id` per call.
+  </Tab>
+</Tabs>
+
+Users who sign in to Microsoft Advertising with a Google account are not supported yet: Microsoft's API does not accept those identities. Invite a Microsoft account or a work (Entra) user to the ad account and connect as that user. The error `MICROSOFT_ADS_NOT_AN_ACCOUNT_USER` after a working sign-in means exactly this.
+
+## What is different from Google Ads
+
+| | Google Ads | Microsoft Advertising |
+|---|---|---|
+| Account argument | `customer_id` | `ad_account_id` (the manager account comes from the connection) |
+| Bidding | manual CPC and Smart Bidding | Enhanced CPC, Maximize Clicks, Maximize Conversions (with an optional target CPA). Microsoft retired manual CPC for search campaigns and stores it as Enhanced CPC, so AdLoop drafts Enhanced CPC and says why |
+| Dry run | validated against the API | read-side preflight: the target is re-read and the safety caps re-checked; nothing is sent. The apply runs the same checks again right before sending |
+| Locations | presence or presence and interest | Microsoft's default also reaches people elsewhere who search about the area; `get_microsoft_location_performance` shows how much spend that took |
+| Monthly spend | up to 30.4 × the daily budget | the same; the budget preview says so |
+| Reach beyond search | Display expansion | search campaigns can also show on the Microsoft Audience Network (Outlook, MSN, Edge); set `audience_ads_bid_adjustment=-100` on an ad group to keep it on search |
+| Rate limits | shared developer-token quota | per customer in a sliding 60-second window; a `MICROSOFT_ADS_RATE_LIMITED` error says to wait 60 seconds |
+
+Conversions come from Microsoft's qualified conversion columns, the ones Microsoft itself reports; the older conversion columns read 0 in keyword and search term reports.
+
+## Tools
+
+Reads: `list_microsoft_ads_accounts`, `get_microsoft_campaigns`, `get_microsoft_ad_groups`, `get_microsoft_keywords`, `get_microsoft_ads`, `get_microsoft_performance` (with `compact` mode), `get_microsoft_search_terms`, `get_microsoft_location_performance`, `get_microsoft_conversion_setup` (UET tags, conversion goals, campaigns bidding on goals), `get_microsoft_negative_keywords`, `get_microsoft_ad_extensions`, `search_microsoft_locations`.
+
+Writes (all previewed): campaigns (`draft_microsoft_campaign`, `update_microsoft_campaign`, `update_microsoft_campaign_budget`, `update_microsoft_campaign_targeting`), ad groups and keywords (`draft_microsoft_ad_group`, `update_microsoft_ad_group`, `draft_microsoft_keywords`, `update_microsoft_keyword_bids`), ads (`draft_microsoft_responsive_search_ad`, `update_microsoft_responsive_search_ad`), negatives (direct or in shared lists), extensions (sitelinks, callouts, structured snippets, call and image extensions), `pause_microsoft_entity`, `enable_microsoft_entity` and `remove_microsoft_entity` (irreversible, double confirmation).
+
+The full list with parameters is in the [tool reference](/reference/tools#microsoft-advertising-microsoft_ads); the toolset slug is `microsoft_ads`.
+
+## Safety rules
+
+The rules mirror Google Ads:
+
+- Broad match is refused unless the campaign uses conversion-based bidding (Maximize Conversions, Maximize Conversion Value, or a target CPA or ROAS). Maximize Clicks does not count.
+- Maximize Conversions is refused while the account has no active conversion goal, because Microsoft refuses the campaign then. `get_microsoft_conversion_setup` shows what exists.
+- Daily budgets above your cap are refused; keyword and ad group bid raises are capped like Google's.
+- A campaign's first ad schedule needs a double confirmation, because it switches off every other hour.
+- Multi-step changes (a campaign and its targeting, a list and its attachments) end with `PARTIAL_APPLY` when a later step fails. The result names what exists, and the plan cannot be applied twice.
+
+## Operations and limits
+
+On AdLoop Cloud, Microsoft Advertising calls count toward the same operations limits as Google Ads and Reddit Ads calls (all ad platforms together); Analytics, Tag Manager, Search Console and Merchant Center stay unmetered. Microsoft never touches the shared Google quota.
+
+## What AdLoop stores
+
+On AdLoop Cloud: an encrypted refresh token (Microsoft replaces it on every renewal; only the current one is kept), the name, email address and ids of the Microsoft account that signed in, the granted permission, and the selected ad account with its customer id, number, name, currency and time zone. Campaign and performance data pass through and are never stored. See the [privacy policy](https://getadloop.com/privacy) for the full description.
