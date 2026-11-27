@@ -13,6 +13,8 @@ Every write tool (`draft_campaign`, `add_negative_keywords`, `pause_entity`, ...
 
 In AI apps that support MCP Apps (Claude, ChatGPT, VS Code and others), the preview appears as an **AdLoop approval card** in the chat: what changes, any warnings, and **Test run**, **Apply** and **Discard** buttons. When you pause, enable or remove something in Google Ads, the card names it and the account next to the IDs, for example campaign “Brand DE” (1234567890) · Example GmbH (123-456-7890), so a wrong account stands out before you click. An ID that matches nothing in the account is refused before a card appears. Test run is the dry run below; Apply is enabled once it has passed.
 
+The card shows the change in plain terms, not as raw API fields. Its title names the action, for example "Pause campaign". Google Ads campaigns and ad groups appear by name with the ID next to it, keywords and other lists as tables, amounts with their currency, and every setting that changes as before → after. A search ad is drawn as an ad, with its display URL, headlines and descriptions. Where the outcome is fixed, one line says what applying does: a new campaign starts paused, a negative keyword stops ads for matching searches, a removal cannot be undone. Fields the change leaves empty are named in one "Not set" line, and long lists fold behind "Show all", so nothing you approve is hidden.
+
 In those apps, only the click applies a change:
 
 - The buttons call a tool that the app keeps out of the AI's tool list, and AdLoop offers it only to apps that show cards.
@@ -57,7 +59,7 @@ New campaigns and ads are always created **PAUSED**, on Google Ads and Reddit Ad
 ## Guardrails against classic money-wasters
 
 - **Broad Match + Manual CPC is refused.** Broad match keywords without smart bidding are the most common cause of wasted spend. Creating a campaign with that combination is refused; adding broad keywords to an existing manual-CPC ad group is flagged in the preview.
-- **Campaigns require geo and language targeting.** Untargeted campaigns serve globally and waste budget; drafts without targeting are rejected.
+- **Campaigns require geo targeting.** Untargeted campaigns serve globally and waste budget; drafts without geo targets are rejected. Languages are not asked for: Google retired manual language targeting for Search campaigns in late September 2026.
 - **URLs are validated.** Ads and sitelinks pointing at unreachable pages are rejected at draft time.
 
 ## Read-only keys
