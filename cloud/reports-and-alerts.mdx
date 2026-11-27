@@ -1,0 +1,50 @@
+---
+title: "Weekly reports and alerts"
+description: "A Monday email with last week's numbers, and a warning when tracking breaks or ads stop serving."
+---
+
+AdLoop Cloud can watch your accounts for you. Switch it on per profile under **Settings → Reports**. Nothing is stored or sent until you do.
+
+## Weekly report
+
+Every Monday morning you get one email per profile with the last seven days against the seven before:
+
+- spend, clicks, conversions and CPA (or ROAS) for Google Ads and Reddit Ads, and the top campaigns;
+- sessions and key events from Google Analytics;
+- campaigns that convert but lose impressions to budget, and campaigns that spend without converting;
+- disapproved or limited ads, and the Merchant Center feed status;
+- the platforms that could not be read this time, by name, so a broken connection never looks like zero.
+
+The report is computed with fixed rules. No AI model reads your numbers. Use **Send a test now** to see the report for a profile right away.
+
+The report is on every plan, including Free. It covers Google Ads, Reddit Ads, Google Analytics and Merchant Center. Microsoft Advertising is not part of it yet.
+
+## Alerts
+
+From Pro, a profile can also send alerts. They are checked every morning and arrive as one digest email:
+
+| Alert | When it fires |
+|---|---|
+| Tracking broken (GA4) | A key event that fired on most days stopped completely |
+| Tracking broken (Google Ads) | No conversions on two complete days while clicks stay normal |
+| Conversion drop | Conversions on the last complete day under half of the week before, with normal clicks |
+| Spend spike | Yesterday's cost more than twice the week before, and at least 20 more in account currency |
+| Budget pacing | Last week's spend above 115 % or below 70 % of the daily budgets |
+| Ads disapproved | An ad is disapproved |
+| Feed disapprovals | Many more disapproved products in Merchant Center than the day before |
+
+Conversions and key events keep arriving for a day or more, so those alerts look at the day before yesterday. Each alert needs a normal level large enough that one quiet day is not news, and an alert that keeps firing is sent once, not every day. A lost Google or Reddit connection gets its own email right away.
+
+## Agencies
+
+On the agency plan every client profile has its own report and alerts, and:
+
+- **More recipients.** Add up to five addresses per profile, for example your client's (three on Pro). They get the same emails, in your language, with their own unsubscribe link. They don't see the AI prompt suggestions or technical error messages.
+- **Your branding.** Enter your agency's name and a logo URL under **Settings → Reports**. The emails then go out under your name and logo instead of AdLoop's, and replies reach you.
+- **Share link.** Create a link to a profile's latest report that works for 30 days without a login (Pro and Agency).
+
+## Data and retention
+
+For the report and alerts, AdLoop stores one encrypted snapshot per profile and night: summarized figures per campaign and day, no search terms and nothing about individual people. Snapshots are kept for 13 months (4 weeks on Free) and deleted as soon as you switch both the report and the alerts off. Details are in the [privacy policy](https://getadloop.com/privacy) (section 6c) and the data processing agreement (§ 3).
+
+Snapshots use a few Google Ads operations each night. They don't count toward your plan's daily or monthly allowance.

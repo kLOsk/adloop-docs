@@ -67,6 +67,7 @@
         "pages": [
           "cloud/api-keys",
           "cloud/clients",
+          "cloud/reports-and-alerts",
           "cloud/plans-and-limits"
         ]
       },
